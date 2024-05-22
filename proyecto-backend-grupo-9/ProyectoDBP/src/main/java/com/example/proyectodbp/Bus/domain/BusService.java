@@ -9,7 +9,7 @@ public class BusService {
     @Autowired
     private BusRepository busRepository;
 
-    public void createBus(Bus newBus, long busId) {
+    public void createBus(Bus newBus, Long busId) {
         Bus bus = busRepository
                 .findById(busId)
                 .orElseThrow(() -> new RuntimeException("Bus not found"));
@@ -19,14 +19,35 @@ public class BusService {
         newBus.setRoute_act(bus.getRoute_act());
         busRepository.save(newBus);
     }
+
+    public Bus getBus(Long id) {
+        return busRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+    }
+
+    public void deleteBus(Long id) {
+        busRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Bus not found"));
+
+        busRepository.deleteById(id);
+    }
+
+    public Bus updateBus(Long id, Bus bus) {
+        Bus busToUpdate = busRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Bus not found"));
+
+        busToUpdate.setPlaca(bus.getPlaca());
+        busToUpdate.setDriver(bus.getDriver());
+        busToUpdate.setRoute_act(bus.getRoute_act());
+        busRepository.save(busToUpdate);
+
+        return busToUpdate;
+    }
+
 }
-//
-//    public void deleteReview(Long id) {
-//        reviewRepository
-//                .findById(id)
-//                .orElseThrow(() -> new RuntimeException("Review not found"));
-//
-//        reviewRepository.deleteById(id);
-//    }
+
 
 
