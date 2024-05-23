@@ -9,21 +9,14 @@ public class BusService {
     @Autowired
     private BusRepository busRepository;
 
-    public void createBus(Bus newBus, Long busId) {
-        Bus bus = busRepository
-                .findById(busId)
-                .orElseThrow(() -> new RuntimeException("Bus not found"));
-
-        newBus.setPlaca(bus.getPlaca());
-        newBus.setDriver(bus.getDriver());
-        newBus.setRoute_act(bus.getRoute_act());
+    public void createBus(Bus newBus) {
         busRepository.save(newBus);
     }
 
     public Bus getBus(Long id) {
         return busRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("Driver not found"));
+                .orElseThrow(() -> new RuntimeException("Bus not found"));
     }
 
     public void deleteBus(Long id) {

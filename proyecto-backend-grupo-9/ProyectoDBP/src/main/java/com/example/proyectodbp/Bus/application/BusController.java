@@ -13,8 +13,9 @@ public class BusController {
     private BusService busService;
 
     @PostMapping()
-    public void createBus(@RequestBody Bus bus, @RequestParam Long busId) {
-        busService.createBus(bus, busId);
+    public ResponseEntity<Bus> createBus(@RequestBody Bus bus) {
+        busService.createBus(bus);
+        return ResponseEntity.created(null).build();
     }
 
     @GetMapping("/{id}")
