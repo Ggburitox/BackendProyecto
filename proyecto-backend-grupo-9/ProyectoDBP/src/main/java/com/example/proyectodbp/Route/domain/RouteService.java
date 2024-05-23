@@ -1,7 +1,5 @@
 package com.example.proyectodbp.Route.domain;
 
-import com.example.proyectodbp.Bus.domain.Bus;
-import com.example.proyectodbp.Bus.infraestructure.BusRepository;
 import com.example.proyectodbp.Route.infraestructure.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
