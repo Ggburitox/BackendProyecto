@@ -9,7 +9,6 @@ import lombok.*;
 @Getter
 @Setter
 public class Driver extends User {
-
     @OneToOne
     private Bus bus;
 }

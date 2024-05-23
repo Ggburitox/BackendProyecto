@@ -15,13 +15,9 @@ public class Bus {
     @Column(nullable = false)
     private String placa;
 
-
-//    @JoinColumn(name = "driver_id", nullable = false)
     @OneToOne
     private Driver driver;
 
-
-//    @JoinColumn(name = "ruta_actual", nullable = false)
     @ManyToOne
     private Route route_act;
 

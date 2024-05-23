@@ -1,6 +1,7 @@
 package com.example.proyectodbp.Station.domain;
 
 import com.example.proyectodbp.Bus.domain.Bus;
+import com.example.proyectodbp.Passenger.domain.Passenger;
 import com.example.proyectodbp.Route.domain.Route;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -25,9 +26,11 @@ public class Station {
     private String station_name;
 
     @ManyToMany(mappedBy = "stations")
-    private List<Route> routes;
+    private Set<Route> routes;
 
     @OneToMany(mappedBy = "station")
     private Set<Bus> buses;
-}
 
+    @OneToMany
+    private List<Passenger> passengers;
+}
