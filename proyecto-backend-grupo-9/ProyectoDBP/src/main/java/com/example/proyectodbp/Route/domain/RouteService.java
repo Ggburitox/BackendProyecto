@@ -40,21 +40,4 @@ public class RouteService{
         return RouteToUpdate;
    }
 
-//    public void addBusToRoute(Long id, Bus bus) {
-//        Route route = routeRepository
-//                .findById(id)
-//                .orElseThrow(() -> new RuntimeException("Route not found"));
-//
-//        routeRepository.addBus(bus);
-//        routeRepository.save(route);
-//    }
-//
-//    public void removeBusFromRoute(Long id, Bus bus) {
-//        Route route = routeRepository
-//                .findById(id)
-//                .orElseThrow(() -> new RuntimeException("Route not found"));
-//
-//        routeRepository.removeBus(bus);
-//        routeRepository.save(route);
-//    }
 }
