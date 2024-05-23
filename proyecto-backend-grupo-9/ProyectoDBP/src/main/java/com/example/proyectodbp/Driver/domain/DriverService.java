@@ -1,5 +1,6 @@
 package com.example.proyectodbp.Driver.domain;
 
+import com.example.proyectodbp.Bus.domain.Bus;
 import com.example.proyectodbp.Driver.infraestructure.DriverRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,51 +17,36 @@ public class DriverService {
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("Driver not found"));
     }
-//
-//    public void saveDriver(Driver Driver) {
-//        driverRepository.save(Driver);
-//    }
-//
-//    public void deleteDriver(Long id) {
-//        driverRepository.deleteById(id);
-//    }
-//
-//    public void updateDriver(Long id, Driver Driver) {
-//
-//        Driver driverToUpdate = driverRepository
-//                .findById(id)
-//                .orElseThrow(() -> new RuntimeException("Driver not found"));
-//
-//        driverToUpdate.setFirstName(Driver.getFirstName());
-//        driverToUpdate.setLastName(Driver.getLastName());
-//        driverToUpdate.setTrips(Driver.getTrips());
-//        driverToUpdate.setAvgRating(Driver.getAvgRating());
-//        driverToUpdate.setCategory(Driver.getCategory());
-//        driverToUpdate.setVehicle(Driver.getVehicle());
-//        driverToUpdate.setCoordinate(Driver.getCoordinate());
-//
-//        driverRepository.save(driverToUpdate);
-//    }
-//
-//    public void updateDriverLocation(Long id, Double latitude, Double longitude) {
-//        Driver Driver = driverRepository
-//                .findById(id)
-//                .orElseThrow(() -> new RuntimeException("Driver not found"));
-//
-//        Coordinate coordinate = new Coordinate();
-//        coordinate.setLatitude(latitude);
-//        coordinate.setLongitude(longitude);
-//        coordinateRepository.save(coordinate);
-//        Driver.setCoordinate(coordinate);
-//        driverRepository.save(Driver);
-//    }
-//
-//    public void updateDriverCar(Long id, Vehicle vehicle) {
-//        Driver Driver = driverRepository
-//                .findById(id)
-//                .orElseThrow(() -> new RuntimeException("Driver not found"));
-//
-//        Driver.setVehicle(vehicle);
-//        driverRepository.save(Driver);
-//    }
+
+    public void createDriver(Driver driver) {
+        driverRepository.save(driver);
+    }
+
+    public void deleteDriver(Long id) {
+        Driver driver = driverRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+        driverRepository.delete(driver);
+    }
+
+    public void updateDriver(Long id, Driver driver) {
+        Driver driverToUpdate = driverRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+        driverToUpdate.setFirstName(driver.getFirstName());
+        driverToUpdate.setLastName(driver.getLastName());
+        driverToUpdate.setEmail(driver.getEmail());
+        driverToUpdate.setPassword(driver.getPassword());
+        driverToUpdate.setPhoneNumber(driver.getPhoneNumber());
+        driverToUpdate.setDni(driver.getDni());
+        driverRepository.save(driverToUpdate);
+    }
+
+    public void updateDriverBus(Long id, Bus bus) {
+        Driver driver = driverRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+        driver.setBus(bus);
+        driverRepository.save(driver);
+    }
 }
