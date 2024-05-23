@@ -17,33 +17,33 @@ public class DriverService {
                 .orElseThrow(() -> new RuntimeException("Driver not found"));
     }
 //
-//    public void saveDriver(Driver driver) {
-//        driverRepository.save(driver);
+//    public void saveDriver(Driver Driver) {
+//        driverRepository.save(Driver);
 //    }
 //
 //    public void deleteDriver(Long id) {
 //        driverRepository.deleteById(id);
 //    }
 //
-//    public void updateDriver(Long id, Driver driver) {
+//    public void updateDriver(Long id, Driver Driver) {
 //
 //        Driver driverToUpdate = driverRepository
 //                .findById(id)
 //                .orElseThrow(() -> new RuntimeException("Driver not found"));
 //
-//        driverToUpdate.setFirstName(driver.getFirstName());
-//        driverToUpdate.setLastName(driver.getLastName());
-//        driverToUpdate.setTrips(driver.getTrips());
-//        driverToUpdate.setAvgRating(driver.getAvgRating());
-//        driverToUpdate.setCategory(driver.getCategory());
-//        driverToUpdate.setVehicle(driver.getVehicle());
-//        driverToUpdate.setCoordinate(driver.getCoordinate());
+//        driverToUpdate.setFirstName(Driver.getFirstName());
+//        driverToUpdate.setLastName(Driver.getLastName());
+//        driverToUpdate.setTrips(Driver.getTrips());
+//        driverToUpdate.setAvgRating(Driver.getAvgRating());
+//        driverToUpdate.setCategory(Driver.getCategory());
+//        driverToUpdate.setVehicle(Driver.getVehicle());
+//        driverToUpdate.setCoordinate(Driver.getCoordinate());
 //
 //        driverRepository.save(driverToUpdate);
 //    }
 //
 //    public void updateDriverLocation(Long id, Double latitude, Double longitude) {
-//        Driver driver = driverRepository
+//        Driver Driver = driverRepository
 //                .findById(id)
 //                .orElseThrow(() -> new RuntimeException("Driver not found"));
 //
@@ -51,16 +51,16 @@ public class DriverService {
 //        coordinate.setLatitude(latitude);
 //        coordinate.setLongitude(longitude);
 //        coordinateRepository.save(coordinate);
-//        driver.setCoordinate(coordinate);
-//        driverRepository.save(driver);
+//        Driver.setCoordinate(coordinate);
+//        driverRepository.save(Driver);
 //    }
 //
 //    public void updateDriverCar(Long id, Vehicle vehicle) {
-//        Driver driver = driverRepository
+//        Driver Driver = driverRepository
 //                .findById(id)
 //                .orElseThrow(() -> new RuntimeException("Driver not found"));
 //
-//        driver.setVehicle(vehicle);
-//        driverRepository.save(driver);
+//        Driver.setVehicle(vehicle);
+//        driverRepository.save(Driver);
 //    }
 }
