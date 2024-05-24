@@ -3,6 +3,7 @@ package com.example.proyectodbp.Route.application;
 import com.example.proyectodbp.Route.domain.Route;
 import com.example.proyectodbp.Route.domain.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,19 +15,20 @@ public class RouteController {
     private RouteService routeService;
 
     @PostMapping
-    public ResponseEntity<Route> createRoute(@RequestBody Route route) {
+    public ResponseEntity<Void> createRoute(@RequestBody Route route) {
         routeService.createRoute(route);
-        return ResponseEntity.created(null).build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Route> getRoute(@PathVariable Long id) {
-        return ResponseEntity.ok(routeService.getRoute(id));
+        return new ResponseEntity<>(routeService.getRoute(id), HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Route> updateRoute(@PathVariable Long id, @RequestBody Route route) {
-        return ResponseEntity.ok(routeService.updateRoute(id, route));
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateRoute(@PathVariable Long id, @RequestBody Route route) {
+        routeService.updateRoute(id, route);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

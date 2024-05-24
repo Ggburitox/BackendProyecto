@@ -29,7 +29,7 @@ public class DriverService {
         driverRepository.delete(driver);
     }
 
-    public void updateDriver(Long id, Driver driver) {
+    public Driver updateDriver(Long id, Driver driver) {
         Driver driverToUpdate = driverRepository
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("Driver not found"));
@@ -40,6 +40,7 @@ public class DriverService {
         driverToUpdate.setPhoneNumber(driver.getPhoneNumber());
         driverToUpdate.setDni(driver.getDni());
         driverRepository.save(driverToUpdate);
+        return driverToUpdate;
     }
 
     public void updateDriverBus(Long id, Bus bus) {

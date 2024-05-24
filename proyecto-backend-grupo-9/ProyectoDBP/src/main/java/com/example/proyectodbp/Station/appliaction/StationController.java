@@ -4,6 +4,7 @@ import com.example.proyectodbp.Route.domain.Route;
 import com.example.proyectodbp.Station.domain.Station;
 import com.example.proyectodbp.Station.domain.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,25 +17,26 @@ public class StationController {
     private StationService stationService;
 
     @PostMapping
-    public ResponseEntity<Route> createStation(@RequestBody Station station){
+    public ResponseEntity<Void> createStation(@RequestBody Station station){
         stationService.createStation(station);
-        return ResponseEntity.created(null).build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Station> getStation(@PathVariable Long id){
-        return ResponseEntity.ok(stationService.getStation(id));
+        return new ResponseEntity<>(stationService.getStation(id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Station> updateStation(@PathVariable Long id, @RequestBody Station station){
-        return ResponseEntity.ok(stationService.updateStation(id, station));
+    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody Station station){
+        stationService.updateStation(id, station);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id){
         stationService.deleteStation(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

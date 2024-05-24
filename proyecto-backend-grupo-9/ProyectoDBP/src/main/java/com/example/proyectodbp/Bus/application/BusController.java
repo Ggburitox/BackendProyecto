@@ -3,6 +3,7 @@ package com.example.proyectodbp.Bus.application;
 import com.example.proyectodbp.Bus.domain.Bus;
 import com.example.proyectodbp.Bus.domain.BusService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,25 +14,26 @@ public class BusController {
     private BusService busService;
 
     @PostMapping()
-    public ResponseEntity<Bus> createBus(@RequestBody Bus bus) {
+    public ResponseEntity<Void> createBus(@RequestBody Bus bus) {
         busService.createBus(bus);
-        return ResponseEntity.created(null).build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Bus> getBus(@PathVariable Long id) {
-        return ResponseEntity.ok(busService.getBus(id));
+        return new ResponseEntity<>(busService.getBus(id), HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Bus> updateBus(@PathVariable Long id, @RequestBody Bus bus) {
-        return ResponseEntity.ok(busService.updateBus(id, bus));
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateBus(@PathVariable Long id, @RequestBody Bus bus) {
+        busService.updateBus(id, bus);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBus(@PathVariable Long id) {
         busService.deleteBus(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
