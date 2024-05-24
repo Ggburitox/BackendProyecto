@@ -12,7 +12,6 @@ import java.util.Set;
 
 @Data
 public class StationDto {
-
     @NotNull
     @Size(min = 2, max = 50)
     private String station_name;
