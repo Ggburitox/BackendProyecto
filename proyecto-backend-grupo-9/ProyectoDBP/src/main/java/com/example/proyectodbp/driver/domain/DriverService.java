@@ -3,6 +3,7 @@ package com.example.proyectodbp.driver.domain;
 import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
 
+import com.example.proyectodbp.exceptions.EntityAlreadyExists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +18,15 @@ public class DriverService {
     public Driver getDriver(Long id) {
         return driverRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("driver not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("This driver does not exist"));
     }
 
     public List<Driver> getAllDrivers() {
-        return driverRepository.findAll();
+            List<Driver> drivers = driverRepository.findAll();
+            if (drivers.isEmpty()) {
+                throw new EntityAlreadyExists("There are no drivers in the database");
+            }
+            return drivers;
     }
 
 
@@ -32,14 +37,14 @@ public class DriverService {
     public void deleteDriver(Long id) {
         Driver driver = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("driver not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("driver not found"));
         driverRepository.delete(driver);
     }
 
     public Driver updateDriver(Long id, Driver driver) {
         Driver driverToUpdate = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("driver not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("This driver does not exist"));
         driverToUpdate.setFirstName(driver.getFirstName());
         driverToUpdate.setLastName(driver.getLastName());
         driverToUpdate.setEmail(driver.getEmail());
@@ -53,7 +58,7 @@ public class DriverService {
     public void updateDriverBus(Long id, Bus bus) {
         Driver driver = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("driver not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("This driver does not exist"));
         driver.setBus(bus);
         driverRepository.save(driver);
     }

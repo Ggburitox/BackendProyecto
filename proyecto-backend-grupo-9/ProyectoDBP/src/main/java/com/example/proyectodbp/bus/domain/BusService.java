@@ -1,6 +1,7 @@
 package com.example.proyectodbp.bus.domain;
 
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
+import com.example.proyectodbp.exceptions.EntityAlreadyExists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +17,13 @@ public class BusService {
     public Bus getBus(Long id) {
         return busRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("bus not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("This bus does not exist"));
     }
 
     public void deleteBus(Long id) {
         busRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("bus not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("This bus does not exist"));
 
         busRepository.deleteById(id);
     }
@@ -30,7 +31,7 @@ public class BusService {
     public Bus updateBus(Long id, Bus bus) {
         Bus busToUpdate = busRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("bus not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("This bus does not exist"));
 
         busToUpdate.setPlaca(bus.getPlaca());
         busToUpdate.setDriver(bus.getDriver());
