@@ -17,13 +17,13 @@ public class StationService {
     public Station getStation(Long id) {
         return stationRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("station not found"));
+                .orElseThrow(() -> new RuntimeException("This station does not exist"));
     }
 
     public void deleteStation(Long id) {
         stationRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("station not found"));
+                .orElseThrow(() -> new RuntimeException("This station does not exist"));
 
         stationRepository.deleteById(id);
     }
@@ -31,7 +31,7 @@ public class StationService {
     public Station updateStation(Long id, Station station) {
         Station stationToUpdate = stationRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("station not found"));
+                .orElseThrow(() -> new RuntimeException("This station does not exist"));
 
         stationToUpdate.setStation_name(station.getStation_name());
         stationToUpdate.setRoutes(station.getRoutes());

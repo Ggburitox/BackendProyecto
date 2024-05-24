@@ -1,5 +1,6 @@
 package com.example.proyectodbp.passenger.domain;
 
+import com.example.proyectodbp.exceptions.EntityAlreadyExists;
 import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,20 +18,20 @@ public class PassengerService {
     public Passenger getPassenger(Long id) {
         return passengerRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("driver not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("The passenger does not exist"));
     }
 
     public void deletePassenger(Long id) {
         Passenger passenger = passengerRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("driver not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("The passenger does not exist"));
         passengerRepository.delete(passenger);
     }
 
     public Passenger updatePassenger(Long id, Passenger passenger) {
         Passenger passengertoUpdate = passengerRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("driver not found"));
+                .orElseThrow(() -> new EntityAlreadyExists("The passenger does not exist"));
         passengertoUpdate.setStation(passenger.getStation());
         passengertoUpdate.setFirstName(passenger.getFirstName());
         passengertoUpdate.setLastName(passenger.getLastName());
