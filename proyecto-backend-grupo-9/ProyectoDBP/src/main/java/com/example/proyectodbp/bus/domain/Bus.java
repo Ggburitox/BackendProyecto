@@ -4,6 +4,9 @@ import com.example.proyectodbp.station.domain.Station;
 import com.example.proyectodbp.driver.domain.Driver;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.antlr.v4.runtime.misc.NotNull;
+
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -12,6 +15,7 @@ public class Bus {
     private Long id;
 
     @Column(nullable = false)
+    @Size(min = 6, max = 6)
     private String placa;
 
     @OneToOne
@@ -21,7 +25,6 @@ public class Bus {
     private Route route_act;
 
     @ManyToOne
-    @JoinColumn(name = "station_id")
     private Station station;
 }
 

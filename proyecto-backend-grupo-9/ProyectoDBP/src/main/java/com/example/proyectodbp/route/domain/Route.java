@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -18,14 +20,9 @@ public class Route {
     private Long id;
 
     @Column(nullable = false)
+    @Size(min = 2, max = 50)
     private String route_name;
 
-
-//    @JoinTable(
-//            name = "route_station",
-//            joinColumns = @JoinColumn(name = "route_id"),
-//            inverseJoinColumns = @JoinColumn(name = "station_id")
-//    )
     @ManyToMany
     private List<Station> stations;
 }

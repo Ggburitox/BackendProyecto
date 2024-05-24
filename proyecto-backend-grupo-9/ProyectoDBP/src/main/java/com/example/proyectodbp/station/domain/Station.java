@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +24,7 @@ public class Station {
     private Long id;
 
     @Column(nullable = false)
+    @Size(min = 2, max = 50)
     private String station_name;
 
     @ManyToMany(mappedBy = "stations")
