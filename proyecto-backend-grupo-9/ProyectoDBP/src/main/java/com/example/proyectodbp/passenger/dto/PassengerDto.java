@@ -9,7 +9,6 @@ import javax.validation.constraints.Size;
 
 @Data
 public class PassengerDto {
-
     @NotNull
     @Size(min = 2, max = 50)
     private String firstName;
@@ -21,10 +20,6 @@ public class PassengerDto {
     @NotNull
     @Email
     private String email;
-
-    @NotNull
-    @Size(min = 9, max = 9)
-    private String phoneNumber;
 
     @NotNull
     @Size(min = 8, max = 8)

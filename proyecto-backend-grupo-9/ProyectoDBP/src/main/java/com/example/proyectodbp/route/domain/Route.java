@@ -1,5 +1,6 @@
 package com.example.proyectodbp.route.domain;
 
+import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.station.domain.*;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -20,8 +21,11 @@ public class Route {
     private Long id;
 
     @Column(nullable = false)
-    @Size(min = 2, max = 50)
+    @Size(min = 1, max = 50)
     private String route_name;
+
+    @OneToMany
+    private List<Bus> buses;
 
     @ManyToMany
     private List<Station> stations;

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.validation.constraints.Size;
 
@@ -21,13 +20,13 @@ public class Bus {
 
     @Column(nullable = false)
     @Size(min = 6, max = 6)
-    private String placa;
+    private String plate;
 
     @OneToOne
     private Driver driver;
 
     @ManyToOne
-    private Route route_act;
+    private Route route;
 
     @ManyToOne
     private Station station;
