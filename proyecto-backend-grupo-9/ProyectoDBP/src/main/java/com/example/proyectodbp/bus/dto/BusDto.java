@@ -18,5 +18,4 @@ public class BusDto {
 
     @NotNull
     private Station station;
-
 }
