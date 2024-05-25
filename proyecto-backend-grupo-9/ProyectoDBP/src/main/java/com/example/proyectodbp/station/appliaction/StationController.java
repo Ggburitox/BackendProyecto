@@ -37,4 +37,8 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/route")
+    public ResponseEntity<StationDto> addRoute(@PathVariable Long id, @RequestBody String routeName){
+        return ResponseEntity.ok(stationService.addRoute(id, routeName));
+    }
 }
