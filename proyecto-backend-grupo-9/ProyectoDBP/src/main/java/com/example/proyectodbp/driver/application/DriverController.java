@@ -1,12 +1,11 @@
 package com.example.proyectodbp.driver.application;
 
-import com.example.proyectodbp.bus.domain.Bus;
+import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.driver.domain.DriverService;
 import com.example.proyectodbp.driver.dto.DriverDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 
 @RestController
@@ -38,8 +37,7 @@ public class DriverController {
     }
 
     @PatchMapping("/{id}/bus")
-    public ResponseEntity<Void> patchDriver(@PathVariable Long id, Bus bus){
-        driverService.updateDriverBus(id, bus);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<DriverDto> patchDriverBus(@PathVariable Long id,@RequestBody BusDto busDto){
+        return ResponseEntity.ok(driverService.updateDriverBus(id, busDto));
     }
 }

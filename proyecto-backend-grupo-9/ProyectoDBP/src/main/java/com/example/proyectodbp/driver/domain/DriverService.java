@@ -1,9 +1,10 @@
 package com.example.proyectodbp.driver.domain;
 
 import com.example.proyectodbp.bus.domain.Bus;
+import com.example.proyectodbp.bus.dto.BusDto;
+import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.driver.dto.DriverDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
-
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DriverService {
-
     @Autowired
     private DriverRepository driverRepository;
+
+    @Autowired
+    private BusRepository busRepository;
 
     public DriverDto getDriverInfo(Long id) {
         Driver driver = driverRepository
@@ -59,11 +62,23 @@ public class DriverService {
         driverRepository.save(driverToUpdate);
     }
 
-    public void updateDriverBus(Long id, Bus bus) {
+    public DriverDto updateDriverBus(Long id, BusDto busDto) {
         Driver driver = driverRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
+
+        Bus bus = new Bus();
+        bus.setPlate(busDto.getPlate());
+        bus.setRoute(busDto.getRoute());
+        bus.setStation(busDto.getStation());
+        bus.setDriver(driver);
+        busRepository.save(bus);
+
         driver.setBus(bus);
         driverRepository.save(driver);
+
+        DriverDto driverDto = new DriverDto();
+        driverDto.setBus(driver.getBus());
+        return driverDto;
     }
 }
