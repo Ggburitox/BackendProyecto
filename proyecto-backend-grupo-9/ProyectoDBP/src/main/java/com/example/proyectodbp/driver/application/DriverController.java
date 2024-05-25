@@ -3,11 +3,13 @@ package com.example.proyectodbp.driver.application;
 import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.driver.domain.Driver;
 import com.example.proyectodbp.driver.domain.DriverService;
+import com.example.proyectodbp.driver.dto.DriverDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -17,18 +19,13 @@ public class DriverController {
     private DriverService driverService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Driver> getDriver(@PathVariable Long id) {
-        return new ResponseEntity<>(driverService.getDriver(id), HttpStatus.OK);
+    public ResponseEntity<DriverDto> getDriver(@PathVariable Long id) {
+        return new ResponseEntity<>(driverService.getDriverInfo(id), HttpStatus.OK);
     }
 
-    @GetMapping()
-    public ResponseEntity<List<Driver>> getAllDrivers() {
-        return new ResponseEntity<>(driverService.getAllDrivers(), HttpStatus.OK);
-    }
     @PostMapping()
-    public ResponseEntity<Void> createDriver(@RequestBody Driver driver) {
-        driverService.createDriver(driver);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Void> createDriver(@RequestBody DriverDto driver) {
+        return ResponseEntity.created(URI.create(driverService.createDriver(driver))).build();
     }
 
     @DeleteMapping("/{id}")
