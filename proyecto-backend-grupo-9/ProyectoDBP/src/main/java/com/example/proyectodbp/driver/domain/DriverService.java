@@ -1,13 +1,14 @@
 package com.example.proyectodbp.driver.domain;
 
 import com.example.proyectodbp.bus.domain.Bus;
+import com.example.proyectodbp.bus.infraestructure.BusRepository;
+import com.example.proyectodbp.driver.dto.DriverDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
 
-import com.example.proyectodbp.exceptions.EntityAlreadyExists;
+import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
+import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class DriverService {
@@ -15,36 +16,46 @@ public class DriverService {
     @Autowired
     private DriverRepository driverRepository;
 
-    public Driver getDriver(Long id) {
-        return driverRepository
+    @Autowired
+    private BusRepository busRepository;
+
+    public DriverDto getDriverInfo(Long id) {
+        Driver driver = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityAlreadyExists("This driver does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
+
+        DriverDto driverDto = new DriverDto();
+        driverDto.setFirstName(driver.getFirstName());
+        driverDto.setLastName(driver.getLastName());
+        driverDto.setEmail(driver.getEmail());
+        driverDto.setDni(driver.getDni());
+        return driverDto;
     }
 
-    public List<Driver> getAllDrivers() {
-            List<Driver> drivers = driverRepository.findAll();
-            if (drivers.isEmpty()) {
-                throw new EntityAlreadyExists("There are no drivers in the database");
-            }
-            return drivers;
-    }
-
-
-    public void createDriver(Driver driver) {
-        driverRepository.save(driver);
+    public String createDriver(DriverDto driver) {
+        if (driverRepository.findByEmail(driver.getEmail()).isPresent()) {
+            throw new UniqueResourceAlreadyExist("This driver already exists");
+        }
+        Driver newDriver = new Driver();
+        newDriver.setFirstName(driver.getFirstName());
+        newDriver.setLastName(driver.getLastName());
+        newDriver.setEmail(driver.getEmail());
+        newDriver.setDni(driver.getDni());
+        driverRepository.save(newDriver);
+        return "/driver/"+newDriver.getId();
     }
 
     public void deleteDriver(Long id) {
         Driver driver = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityAlreadyExists("driver not found"));
+                .orElseThrow(() -> new UniqueResourceAlreadyExist("driver not found"));
         driverRepository.delete(driver);
     }
 
     public Driver updateDriver(Long id, Driver driver) {
         Driver driverToUpdate = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityAlreadyExists("This driver does not exist"));
+                .orElseThrow(() -> new UniqueResourceAlreadyExist("This driver does not exist"));
         driverToUpdate.setFirstName(driver.getFirstName());
         driverToUpdate.setLastName(driver.getLastName());
         driverToUpdate.setEmail(driver.getEmail());
@@ -57,7 +68,7 @@ public class DriverService {
     public void updateDriverBus(Long id, Bus bus) {
         Driver driver = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityAlreadyExists("This driver does not exist"));
+                .orElseThrow(() -> new UniqueResourceAlreadyExist("This driver does not exist"));
         driver.setBus(bus);
         driverRepository.save(driver);
     }

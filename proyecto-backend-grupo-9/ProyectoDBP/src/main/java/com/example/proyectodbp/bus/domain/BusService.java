@@ -16,43 +16,41 @@ public class BusService {
             throw new EntityAlreadyExists("This bus already exists");
         }
 
-        Bus newbus = new Bus();
-        newbus.setPlate(Busdto.getPlate());
-        newbus.setRoute(Busdto.getRoute());
-        busRepository.save(newbus);
-        return "/driver/"+newbus.getId();
+        Bus newBus = new Bus();
+        newBus.setPlate(Busdto.getPlate());
+        newBus.setRoute(Busdto.getRoute());
+        busRepository.save(newBus);
+        return "/driver/"+newBus.getId();
     }
 
     public BusDto getBus(Long id) {
-         Bus bus = busRepository
+        Bus bus = busRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityAlreadyExists("This bus does not exist"));
 
-         BusDto busDto = new BusDto();
-         busDto.setPlate(bus.getPlate());
-         busDto.setRoute(bus.getRoute());
-         return busDto;
+        BusDto busDto = new BusDto();
+        busDto.setPlate(bus.getPlate());
+        busDto.setRoute(bus.getRoute());
+        return busDto;
     }
 
     public void deleteBus(Long id) {
-        busRepository
+        Bus bus = busRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityAlreadyExists("This bus does not exist"));
-
+        
         busRepository.deleteById(id);
     }
 
     public void updateBus(Long id, BusDto busDto) {
-        busRepository.
-                findById(id).
-                orElseThrow(() -> new EntityAlreadyExists("This bus does not exist"));
+        Bus busToUpdate = busRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityAlreadyExists("This bus does not exist"));
 
-        Bus busToUpdate = new Bus();
         busToUpdate.setPlate(busDto.getPlate());
         busToUpdate.setRoute(busDto.getRoute());
         busRepository.save(busToUpdate);
     }
-
 }
 
 

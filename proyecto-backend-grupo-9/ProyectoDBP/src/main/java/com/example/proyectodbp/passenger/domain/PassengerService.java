@@ -28,7 +28,7 @@ public class PassengerService {
     public PassengerDto getPassenger(Long id) {
         Passenger passenger = passengerRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityAlreadyExists("El pasajero no existe"));
+                .orElseThrow(() -> new EntityAlreadyExists("The passenger does not exist"));
 
         PassengerDto passengerDto = new PassengerDto();
         passengerDto.setFirstName(passenger.getFirstName());
@@ -36,7 +36,6 @@ public class PassengerService {
         passengerDto.setEmail(passenger.getEmail());
         passengerDto.setDni(passenger.getDni());
         return passengerDto;
-
     }
 
     public void deletePassenger(Long id) {
@@ -46,17 +45,14 @@ public class PassengerService {
         passengerRepository.delete(passenger);
     }
 
-    public void updatePassenger(Long id, PassengerDto passengerdto) {
-        passengerRepository.
-                findById(id).
-                orElseThrow(() -> new EntityAlreadyExists("The passenger does not exist"));
-
-        Passenger passengerToUpdate = new Passenger();
-        passengerToUpdate.setFirstName(passengerdto.getFirstName());
-        passengerToUpdate.setLastName(passengerdto.getLastName());
-        passengerToUpdate.setEmail(passengerdto.getEmail());
-        passengerToUpdate.setDni(passengerdto.getDni());
+    public void updatePassenger(Long id, PassengerDto passengerDto) {
+        Passenger passengerToUpdate = passengerRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityAlreadyExists("The passenger does not exist"));
+        passengerToUpdate.setFirstName(passengerDto.getFirstName());
+        passengerToUpdate.setLastName(passengerDto.getLastName());
+        passengerToUpdate.setEmail(passengerDto.getEmail());
+        passengerToUpdate.setDni(passengerDto.getDni());
         passengerRepository.save(passengerToUpdate);
     }
-
 }

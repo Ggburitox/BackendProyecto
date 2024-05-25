@@ -30,11 +30,10 @@ public class RouteService{
                 .findById(id)
                 .orElseThrow(() -> new EntityAlreadyExists("This route does not exist"));
 
-        RouteDto RouteToUpdate = new RouteDto();
-        RouteToUpdate.setStations(route.getStations());
-        RouteToUpdate.setRoute_name(route.getRoute_name());
-        return RouteToUpdate;
-
+        RouteDto routeToUpdate = new RouteDto();
+        routeToUpdate.setStations(route.getStations());
+        routeToUpdate.setRoute_name(route.getRoute_name());
+        return routeToUpdate;
     }
 
     public void deleteRoute(Long id) {
@@ -46,14 +45,13 @@ public class RouteService{
     }
 
     public void updateRoute(Long id, RouteDto routeDto) {
-                routeRepository.
-                findById(id).
-                orElseThrow(() -> new EntityAlreadyExists("This route does not exist"));
+        routeRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityAlreadyExists("This route does not exist"));
 
         Route routeToUpdate = new Route();
         routeToUpdate.setRoute_name(routeDto.getRoute_name());
         routeToUpdate.setStations(routeDto.getStations());
         routeRepository.save(routeToUpdate);
     }
-
 }
