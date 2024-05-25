@@ -9,7 +9,6 @@ import javax.validation.constraints.Size;
 
 @Data
 public class DriverDto {
-
     @Size(min = 2, max = 50)
     @NotNull
     private String firstName;
@@ -19,11 +18,8 @@ public class DriverDto {
     private String lastName;
 
     @Email
-    private String email;
-
-    @Size(min = 9, max = 9)
     @NotNull
-    private String phoneNumber;
+    private String email;
 
     @Size(min = 8, max = 8)
     @NotNull

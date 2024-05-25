@@ -4,7 +4,6 @@ import com.example.proyectodbp.station.domain.Station;
 import com.example.proyectodbp.driver.domain.Driver;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import javax.validation.constraints.Size;
 
@@ -16,13 +15,13 @@ public class Bus {
 
     @Column(nullable = false)
     @Size(min = 6, max = 6)
-    private String placa;
+    private String plate;
 
     @OneToOne
     private Driver driver;
 
     @ManyToOne
-    private Route route_act;
+    private Route route;
 
     @ManyToOne
     private Station station;

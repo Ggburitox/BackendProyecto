@@ -32,9 +32,9 @@ public class BusService {
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("bus not found"));
 
-        busToUpdate.setPlaca(bus.getPlaca());
+        busToUpdate.setPlate(bus.getPlate());
         busToUpdate.setDriver(bus.getDriver());
-        busToUpdate.setRoute_act(bus.getRoute_act());
+        busToUpdate.setRoute(bus.getRoute());
         busRepository.save(busToUpdate);
 
         return busToUpdate;

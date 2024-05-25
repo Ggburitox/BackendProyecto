@@ -36,10 +36,6 @@ public class User{
     @Size(min = 5, max = 20)
     private String password;
 
-    @Column(name = "phone_number", nullable = false)
-    @Size(min = 9, max = 9)
-    private String phoneNumber;
-
     @Column(name = "dni", nullable = false)
     @Size(min = 8, max = 8)
     private String dni;
