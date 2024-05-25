@@ -2,11 +2,14 @@ package com.example.proyectodbp.station.appliaction;
 
 import com.example.proyectodbp.station.domain.Station;
 import com.example.proyectodbp.station.domain.StationService;
+import com.example.proyectodbp.station.dto.StationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @Controller
 @RequestMapping("/station")
@@ -16,18 +19,17 @@ public class StationController {
     private StationService stationService;
 
     @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody Station station){
-        stationService.createStation(station);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Void> createStation(@RequestBody StationDto stationDto){
+        return ResponseEntity.created(URI.create(stationService.createStation(stationDto))).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Station> getStation(@PathVariable Long id){
+    public ResponseEntity<StationDto> getStation(@PathVariable Long id){
         return new ResponseEntity<>(stationService.getStation(id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody Station station){
+    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationDto station){
         stationService.updateStation(id, station);
         return new ResponseEntity<>(HttpStatus.OK);
     }

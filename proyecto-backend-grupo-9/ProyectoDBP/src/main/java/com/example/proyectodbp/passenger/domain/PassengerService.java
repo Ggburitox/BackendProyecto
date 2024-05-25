@@ -1,6 +1,7 @@
 package com.example.proyectodbp.passenger.domain;
 
-import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
+import com.example.proyectodbp.exceptions.EntityAlreadyExists;
+import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,33 +12,47 @@ public class PassengerService {
     @Autowired
     private PassengerRepository passengerRepository;
 
-    public void createPassenger(Passenger passenger) {
-        passengerRepository.save(passenger);
+    public String createPassenger(PassengerDto passenger) {
+        if (passengerRepository.FindByEmail(passenger.getEmail()).isPresent()) {
+            throw new EntityAlreadyExists("This driver already exists");
+        }
+        Passenger newPassenger = new Passenger();
+        newPassenger.setFirstName(passenger.getFirstName());
+        newPassenger.setLastName(passenger.getLastName());
+        newPassenger.setEmail(passenger.getEmail());
+        newPassenger.setDni(passenger.getDni());
+        passengerRepository.save(newPassenger);
+        return "/driver/"+newPassenger.getId();
     }
 
-    public Passenger getPassenger(Long id) {
-        return passengerRepository
+    public PassengerDto getPassenger(Long id) {
+        Passenger passenger = passengerRepository
                 .findById(id)
-                .orElseThrow(() -> new UniqueResourceAlreadyExist("The passenger does not exist"));
+                .orElseThrow(() -> new EntityAlreadyExists("The passenger does not exist"));
+
+        PassengerDto passengerDto = new PassengerDto();
+        passengerDto.setFirstName(passenger.getFirstName());
+        passengerDto.setLastName(passenger.getLastName());
+        passengerDto.setEmail(passenger.getEmail());
+        passengerDto.setDni(passenger.getDni());
+        return passengerDto;
     }
 
     public void deletePassenger(Long id) {
         Passenger passenger = passengerRepository
                 .findById(id)
-                .orElseThrow(() -> new UniqueResourceAlreadyExist("The passenger does not exist"));
+                .orElseThrow(() -> new EntityAlreadyExists("The passenger does not exist"));
         passengerRepository.delete(passenger);
     }
 
-    public Passenger updatePassenger(Long id, Passenger passenger) {
-        Passenger passengertoUpdate = passengerRepository
+    public void updatePassenger(Long id, PassengerDto passengerDto) {
+        Passenger passengerToUpdate = passengerRepository
                 .findById(id)
-                .orElseThrow(() -> new UniqueResourceAlreadyExist("The passenger does not exist"));
-        passengertoUpdate.setStation(passenger.getStation());
-        passengertoUpdate.setFirstName(passenger.getFirstName());
-        passengertoUpdate.setLastName(passenger.getLastName());
-        passengertoUpdate.setEmail(passenger.getEmail());
-        passengerRepository.save(passengertoUpdate);
-        return passengertoUpdate;
+                .orElseThrow(() -> new EntityAlreadyExists("The passenger does not exist"));
+        passengerToUpdate.setFirstName(passengerDto.getFirstName());
+        passengerToUpdate.setLastName(passengerDto.getLastName());
+        passengerToUpdate.setEmail(passengerDto.getEmail());
+        passengerToUpdate.setDni(passengerDto.getDni());
+        passengerRepository.save(passengerToUpdate);
     }
-
 }

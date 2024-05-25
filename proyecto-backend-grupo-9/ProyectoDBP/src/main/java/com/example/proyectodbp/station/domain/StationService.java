@@ -1,5 +1,6 @@
 package com.example.proyectodbp.station.domain;
 
+import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,14 +11,27 @@ public class StationService {
     @Autowired
     private StationRepository stationRepository;
 
-    public void createStation(Station newStation) {
-        stationRepository.save(newStation);
+    public String createStation(StationDto newStation) {
+        if (stationRepository.findByStation_name(newStation.getStation_name()).isPresent()) {
+            throw new RuntimeException("This station already exists");
+        }
+
+        Station station = new Station();
+        station.setStation_name(newStation.getStation_name());
+        station.setRoutes(newStation.getRoutes());
+        stationRepository.save(station);
+        return "/station/" + station.getId();
     }
 
-    public Station getStation(Long id) {
-        return stationRepository
+    public StationDto getStation(Long id) {
+        Station station = stationRepository
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("This station does not exist"));
+
+        StationDto stationDto = new StationDto();
+        stationDto.setStation_name(station.getStation_name());
+        stationDto.setRoutes(station.getRoutes());
+        return stationDto;
     }
 
     public void deleteStation(Long id) {
@@ -28,16 +42,15 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public Station updateStation(Long id, Station station) {
-        Station stationToUpdate = stationRepository
+    public void updateStation(Long id, StationDto stationDto) {
+        stationRepository
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("This station does not exist"));
 
-        stationToUpdate.setStation_name(station.getStation_name());
-        stationToUpdate.setRoutes(station.getRoutes());
+        Station stationToUpdate = new Station();
+        stationToUpdate.setStation_name(stationDto.getStation_name());
+        stationToUpdate.setRoutes(stationDto.getRoutes());
         stationRepository.save(stationToUpdate);
-
-        return stationToUpdate;
     }
 
 }
