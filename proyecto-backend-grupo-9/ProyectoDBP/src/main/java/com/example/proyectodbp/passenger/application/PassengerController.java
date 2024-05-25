@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 
 @Controller
@@ -35,5 +34,10 @@ public class PassengerController {
     public ResponseEntity<Void> deletePassenger(@PathVariable Long id) {
         passengerService.deletePassenger(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/station")
+    public ResponseEntity<PassengerDto> patchPassengerStation(@PathVariable Long id, @RequestBody String stationName) {
+        return ResponseEntity.ok(passengerService.updatePassengerStation(id, stationName));
     }
 }

@@ -5,7 +5,6 @@ import com.example.proyectodbp.bus.dto.BusDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 
 @RestController
@@ -34,5 +33,10 @@ public class BusController {
     public ResponseEntity<Void> deleteBus(@PathVariable Long id) {
         busService.deleteBus(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/route")
+    public ResponseEntity<BusDto> patchBusRoute(@PathVariable Long id, @RequestBody String routeName){
+        return ResponseEntity.ok(busService.updateBusRoute(id, routeName));
     }
 }

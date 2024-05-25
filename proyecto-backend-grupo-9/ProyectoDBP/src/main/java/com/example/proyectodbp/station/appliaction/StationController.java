@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 
 @Controller
@@ -38,4 +37,8 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/route")
+    public ResponseEntity<StationDto> addRoute(@PathVariable Long id, @RequestBody String routeName){
+        return ResponseEntity.ok(stationService.addRoute(id, routeName));
+    }
 }

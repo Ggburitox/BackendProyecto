@@ -3,17 +3,21 @@ package com.example.proyectodbp.route.domain;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
+import com.example.proyectodbp.station.domain.Station;
+import com.example.proyectodbp.station.dto.StationDto;
+import com.example.proyectodbp.station.infraestructure.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RouteService{
-
     @Autowired
     private RouteRepository routeRepository;
+    @Autowired
+    private StationRepository stationRepository;
 
     public String createRoute(RouteDto routeDto) {
-        if (routeRepository.findByRouteName(routeDto.getName()).isPresent()) {
+        if (routeRepository.findByName(routeDto.getName()).isPresent()) {
             throw new ResourceNotFoundException("This route already exists");
         }
 
@@ -46,5 +50,23 @@ public class RouteService{
         routeToUpdate.setName(routeDto.getName());
         routeToUpdate.setStations(routeDto.getStations());
         routeRepository.save(routeToUpdate);
+    }
+
+    public StationDto addStation(Long id, String stationName) {
+        Route route = routeRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
+        Station station = stationRepository
+                .findByName(stationName)
+                .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
+        route.getStations().add(station);
+        station.getRoutes().add(route);
+        routeRepository.save(route);
+        stationRepository.save(station);
+
+        StationDto stationDto = new StationDto();
+        stationDto.setName(station.getName());
+        stationDto.setRoutes(station.getRoutes());
+        return stationDto;
     }
 }

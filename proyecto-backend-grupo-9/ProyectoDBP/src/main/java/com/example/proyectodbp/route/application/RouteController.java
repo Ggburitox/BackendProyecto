@@ -2,11 +2,11 @@ package com.example.proyectodbp.route.application;
 
 import com.example.proyectodbp.route.domain.RouteService;
 import com.example.proyectodbp.route.dto.RouteDto;
+import com.example.proyectodbp.station.dto.StationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 
 @Controller
@@ -37,4 +37,8 @@ public class RouteController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/stations")
+    public ResponseEntity<StationDto> addStation(@PathVariable Long id, @RequestBody String stationName) {
+        return ResponseEntity.ok(routeService.addStation(id, stationName));
+    }
 }
