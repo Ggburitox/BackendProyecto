@@ -13,7 +13,7 @@ public class RouteService{
     private RouteRepository routeRepository;
 
     public String createRoute(RouteDto routeDto) {
-        if (routeRepository.findByRouteName(routeDto.getName()).isPresent()) {
+        if (routeRepository.findByName(routeDto.getName()).isPresent()) {
             throw new ResourceNotFoundException("This route already exists");
         }
 

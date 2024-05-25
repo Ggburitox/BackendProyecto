@@ -70,8 +70,8 @@ public class DriverService {
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
 
         bus.setDriver(driver);
-        busRepository.save(bus);
         driver.setBus(bus);
+        busRepository.save(bus);
         driverRepository.save(driver);
 
         DriverDto driverDto = new DriverDto();
