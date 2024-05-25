@@ -1,11 +1,8 @@
 package com.example.proyectodbp.route.application;
 
-import com.example.proyectodbp.passenger.dto.PassengerDto;
-import com.example.proyectodbp.route.domain.Route;
 import com.example.proyectodbp.route.domain.RouteService;
 import com.example.proyectodbp.route.dto.RouteDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +22,13 @@ public class RouteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RouteDto> getRoute(@PathVariable Long id) {
-        return new ResponseEntity<>(routeService.getRoute(id), HttpStatus.OK);
+        return ResponseEntity.ok(routeService.getRouteInfo(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateRoute(@PathVariable Long id, @RequestBody RouteDto route) {
         routeService.updateRoute(id, route);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

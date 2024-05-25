@@ -1,10 +1,8 @@
 package com.example.proyectodbp.station.appliaction;
 
-import com.example.proyectodbp.station.domain.Station;
 import com.example.proyectodbp.station.domain.StationService;
 import com.example.proyectodbp.station.dto.StationDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,19 +23,19 @@ public class StationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StationDto> getStation(@PathVariable Long id){
-        return new ResponseEntity<>(stationService.getStation(id), HttpStatus.OK);
+        return ResponseEntity.ok(stationService.getStationInfo(id));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationDto station){
         stationService.updateStation(id, station);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id){
         stationService.deleteStation(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
 }

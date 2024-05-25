@@ -1,7 +1,6 @@
 package com.example.proyectodbp.driver.domain;
 
 import com.example.proyectodbp.bus.domain.Bus;
-import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.driver.dto.DriverDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
 
@@ -15,9 +14,6 @@ public class DriverService {
 
     @Autowired
     private DriverRepository driverRepository;
-
-    @Autowired
-    private BusRepository busRepository;
 
     public DriverDto getDriverInfo(Long id) {
         Driver driver = driverRepository
@@ -42,7 +38,7 @@ public class DriverService {
         newDriver.setEmail(driver.getEmail());
         newDriver.setDni(driver.getDni());
         driverRepository.save(newDriver);
-        return "/driver/"+newDriver.getId();
+        return "/driver/" + newDriver.getId();
     }
 
     public void deleteDriver(Long id) {
@@ -52,17 +48,15 @@ public class DriverService {
         driverRepository.delete(driver);
     }
 
-    public Driver updateDriver(Long id, Driver driver) {
+    public void updateDriver(Long id, DriverDto driver) {
         Driver driverToUpdate = driverRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
         driverToUpdate.setFirstName(driver.getFirstName());
         driverToUpdate.setLastName(driver.getLastName());
         driverToUpdate.setEmail(driver.getEmail());
-        driverToUpdate.setPassword(driver.getPassword());
         driverToUpdate.setDni(driver.getDni());
         driverRepository.save(driverToUpdate);
-        return driverToUpdate;
     }
 
     public void updateDriverBus(Long id, Bus bus) {

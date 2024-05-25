@@ -12,7 +12,7 @@ import java.util.List;
 public class RouteDto {
     @NotNull
     @Size(min = 1, max = 50)
-    private String route_name;
+    private String name;
 
     @NotEmpty
     private List<Station> stations;

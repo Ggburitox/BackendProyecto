@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +24,7 @@ public class Station {
 
     @Column(nullable = false)
     @Size(min = 2, max = 50)
-    private String stationName;
+    private String name;
 
     @ManyToMany(mappedBy = "stations")
     private Set<Route> routes;

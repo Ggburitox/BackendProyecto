@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class Route {
 
     @Column(nullable = false)
     @Size(min = 1, max = 50)
-    private String routeName;
+    private String name;
 
     @OneToMany
     private List<Bus> buses;
@@ -30,4 +29,3 @@ public class Route {
     @ManyToMany
     private List<Station> stations;
 }
-

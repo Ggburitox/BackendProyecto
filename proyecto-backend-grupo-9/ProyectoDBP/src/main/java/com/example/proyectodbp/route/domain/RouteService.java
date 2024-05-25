@@ -12,45 +12,38 @@ public class RouteService{
     @Autowired
     private RouteRepository routeRepository;
 
-    public String createRoute(RouteDto newRoute) {
-        if (routeRepository.findByRouteName(newRoute.getRoute_name()).isPresent()) {
+    public String createRoute(RouteDto routeDto) {
+        if (routeRepository.findByRouteName(routeDto.getName()).isPresent()) {
             throw new ResourceNotFoundException("This route already exists");
         }
 
         Route route = new Route();
-        route.setRouteName(newRoute.getRoute_name());
-        route.setStations(newRoute.getStations());
+        route.setName(routeDto.getName());
+        route.setStations(routeDto.getStations());
         routeRepository.save(route);
-
         return "/routes/" + route.getId();
     }
 
-    public RouteDto getRoute(Long id) {
+    public RouteDto getRouteInfo(Long id) {
         Route route = routeRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
 
-        RouteDto routeToUpdate = new RouteDto();
-        routeToUpdate.setStations(route.getStations());
-        routeToUpdate.setRoute_name(route.getRouteName());
-        return routeToUpdate;
+        RouteDto routeDto = new RouteDto();
+        routeDto.setName(route.getName());
+        routeDto.setStations(route.getStations());
+        return routeDto;
     }
 
     public void deleteRoute(Long id) {
-        routeRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
-
         routeRepository.deleteById(id);
     }
 
     public void updateRoute(Long id, RouteDto routeDto) {
-        routeRepository
+        Route routeToUpdate = routeRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
-
-        Route routeToUpdate = new Route();
-        routeToUpdate.setRouteName(routeDto.getRoute_name());
+        routeToUpdate.setName(routeDto.getName());
         routeToUpdate.setStations(routeDto.getStations());
         routeRepository.save(routeToUpdate);
     }
