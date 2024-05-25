@@ -1,10 +1,8 @@
 package com.example.proyectodbp.bus.application;
 
-import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.bus.domain.BusService;
 import com.example.proyectodbp.bus.dto.BusDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,19 +21,18 @@ public class BusController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BusDto> getBus(@PathVariable Long id) {
-        return new ResponseEntity<>(busService.getBus(id), HttpStatus.OK);
+        return ResponseEntity.ok(busService.getBus(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateBus(@PathVariable Long id, @RequestBody BusDto busDto) {
         busService.updateBus(id, busDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBus(@PathVariable Long id) {
         busService.deleteBus(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
-
 }

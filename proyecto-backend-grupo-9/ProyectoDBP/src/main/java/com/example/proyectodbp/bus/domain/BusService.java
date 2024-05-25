@@ -3,7 +3,6 @@ package com.example.proyectodbp.bus.domain;
 import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
-import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +19,7 @@ public class BusService {
         Bus newBus = new Bus();
         newBus.setPlate(Busdto.getPlate());
         newBus.setRoute(Busdto.getRoute());
+        newBus.setStation(Busdto.getStation());
         busRepository.save(newBus);
         return "/driver/"+newBus.getId();
     }
@@ -32,14 +32,11 @@ public class BusService {
         BusDto busDto = new BusDto();
         busDto.setPlate(bus.getPlate());
         busDto.setRoute(bus.getRoute());
+        busDto.setStation(bus.getStation());
         return busDto;
     }
 
     public void deleteBus(Long id) {
-        Bus bus = busRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
-        
         busRepository.deleteById(id);
     }
 
@@ -50,6 +47,7 @@ public class BusService {
 
         busToUpdate.setPlate(busDto.getPlate());
         busToUpdate.setRoute(busDto.getRoute());
+        busToUpdate.setStation(busDto.getStation());
         busRepository.save(busToUpdate);
     }
 }
