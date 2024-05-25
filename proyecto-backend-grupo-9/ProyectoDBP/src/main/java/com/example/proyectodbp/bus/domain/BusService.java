@@ -69,7 +69,9 @@ public class BusService {
         routeRepository.save(route);
 
         BusDto busDto = new BusDto();
+        busDto.setPlate(bus.getPlate());
         busDto.setRoute(bus.getRoute());
+        busDto.setStation(bus.getStation());
         return busDto;
     }
 }

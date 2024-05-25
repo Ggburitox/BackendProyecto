@@ -35,4 +35,9 @@ public class PassengerController {
         passengerService.deletePassenger(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/station")
+    public ResponseEntity<PassengerDto> patchPassengerStation(@PathVariable Long id, @RequestBody String stationName) {
+        return ResponseEntity.ok(passengerService.updatePassengerStation(id, stationName));
+    }
 }

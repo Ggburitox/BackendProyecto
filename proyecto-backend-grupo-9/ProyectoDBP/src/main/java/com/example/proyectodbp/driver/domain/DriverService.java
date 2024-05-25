@@ -75,7 +75,11 @@ public class DriverService {
         driverRepository.save(driver);
 
         DriverDto driverDto = new DriverDto();
-        driverDto.setBus(driver.getBus());
+        driverDto.setFirstName(driver.getFirstName());
+        driverDto.setLastName(driver.getLastName());
+        driverDto.setEmail(driver.getEmail());
+        driverDto.setDni(driver.getDni());
+        driverDto.setBus(bus);
         return driverDto;
     }
 }

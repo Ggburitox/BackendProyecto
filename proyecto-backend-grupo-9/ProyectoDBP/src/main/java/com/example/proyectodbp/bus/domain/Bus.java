@@ -31,5 +31,3 @@ public class Bus {
     @ManyToOne
     private Station station;
 }
-
-

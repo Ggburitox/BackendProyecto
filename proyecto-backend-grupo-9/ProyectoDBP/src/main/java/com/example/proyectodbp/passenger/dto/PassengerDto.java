@@ -1,6 +1,6 @@
 package com.example.proyectodbp.passenger.dto;
 
-import jakarta.persistence.Column;
+import com.example.proyectodbp.station.domain.Station;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -24,4 +24,7 @@ public class PassengerDto {
     @NotNull
     @Size(min = 8, max = 8)
     private String dni;
+
+    @NotNull
+    private Station station;
 }
