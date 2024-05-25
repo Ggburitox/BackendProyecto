@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface RouteRepository extends JpaRepository<Route, Long> {
-    Optional<Route> findByRoute_name(String routeName);
+    Optional<Route> findByRouteName(String routeName); // Make sure this method exists
 }
+

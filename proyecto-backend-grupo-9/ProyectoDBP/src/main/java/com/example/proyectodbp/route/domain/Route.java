@@ -22,7 +22,7 @@ public class Route {
 
     @Column(nullable = false)
     @Size(min = 1, max = 50)
-    private String route_name;
+    private String routeName;
 
     @OneToMany
     private List<Bus> buses;

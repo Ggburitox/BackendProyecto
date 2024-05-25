@@ -48,14 +48,14 @@ public class DriverService {
     public void deleteDriver(Long id) {
         Driver driver = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new UniqueResourceAlreadyExist("driver not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("driver not found"));
         driverRepository.delete(driver);
     }
 
     public Driver updateDriver(Long id, Driver driver) {
         Driver driverToUpdate = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new UniqueResourceAlreadyExist("This driver does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
         driverToUpdate.setFirstName(driver.getFirstName());
         driverToUpdate.setLastName(driver.getLastName());
         driverToUpdate.setEmail(driver.getEmail());
@@ -68,7 +68,7 @@ public class DriverService {
     public void updateDriverBus(Long id, Bus bus) {
         Driver driver = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new UniqueResourceAlreadyExist("This driver does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
         driver.setBus(bus);
         driverRepository.save(driver);
     }

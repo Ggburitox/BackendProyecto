@@ -25,7 +25,7 @@ public class Station {
 
     @Column(nullable = false)
     @Size(min = 2, max = 50)
-    private String station_name;
+    private String stationName;
 
     @ManyToMany(mappedBy = "stations")
     private Set<Route> routes;
