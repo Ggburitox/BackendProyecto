@@ -36,7 +36,6 @@ public class PassengerService {
         passengertoUpdate.setFirstName(passenger.getFirstName());
         passengertoUpdate.setLastName(passenger.getLastName());
         passengertoUpdate.setEmail(passenger.getEmail());
-        passengertoUpdate.setPhoneNumber(passenger.getPhoneNumber());
         passengerRepository.save(passengertoUpdate);
         return passengertoUpdate;
     }

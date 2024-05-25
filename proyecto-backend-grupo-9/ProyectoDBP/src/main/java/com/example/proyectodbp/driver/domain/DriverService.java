@@ -49,7 +49,6 @@ public class DriverService {
         driverToUpdate.setLastName(driver.getLastName());
         driverToUpdate.setEmail(driver.getEmail());
         driverToUpdate.setPassword(driver.getPassword());
-        driverToUpdate.setPhoneNumber(driver.getPhoneNumber());
         driverToUpdate.setDni(driver.getDni());
         driverRepository.save(driverToUpdate);
         return driverToUpdate;
