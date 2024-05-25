@@ -1,6 +1,6 @@
 package com.example.proyectodbp.route.domain;
 
-import com.example.proyectodbp.exceptions.EntityAlreadyExists;
+import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,13 +18,13 @@ public class RouteService{
     public Route getRoute(Long id) {
         return routeRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityAlreadyExists("This route does not exist"));
+                .orElseThrow(() -> new UniqueResourceAlreadyExist("This route does not exist"));
     }
 
     public void deleteRoute(Long id) {
         routeRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityAlreadyExists("This route does not exist"));
+                .orElseThrow(() -> new UniqueResourceAlreadyExist("This route does not exist"));
 
         routeRepository.deleteById(id);
     }
@@ -32,7 +32,7 @@ public class RouteService{
     public void updateRoute(Long id, Route route) {
         Route RouteToUpdate = routeRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityAlreadyExists("This route does not exist"));
+                .orElseThrow(() -> new UniqueResourceAlreadyExist("This route does not exist"));
 
         RouteToUpdate.setStations(route.getStations());
         RouteToUpdate.setRoute_name(route.getRoute_name());
