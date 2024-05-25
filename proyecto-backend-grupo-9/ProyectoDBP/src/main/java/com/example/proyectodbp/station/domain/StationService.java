@@ -13,7 +13,7 @@ public class StationService {
     private StationRepository stationRepository;
 
     public String createStation(StationDto stationDto) {
-        if (stationRepository.findBystationName(stationDto.getName()).isPresent()) {
+        if (stationRepository.findByName(stationDto.getName()).isPresent()) {
             throw new ResourceNotFoundException("This station already exists");
         }
 
