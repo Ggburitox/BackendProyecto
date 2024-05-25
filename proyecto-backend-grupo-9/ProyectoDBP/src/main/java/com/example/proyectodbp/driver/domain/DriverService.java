@@ -1,7 +1,6 @@
 package com.example.proyectodbp.driver.domain;
 
 import com.example.proyectodbp.bus.domain.Bus;
-import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.driver.dto.DriverDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
@@ -62,18 +61,16 @@ public class DriverService {
         driverRepository.save(driverToUpdate);
     }
 
-    public DriverDto updateDriverBus(Long id, BusDto busDto) {
+    public DriverDto updateDriverBus(Long id, String busPlate) {
         Driver driver = driverRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
+        Bus bus = busRepository
+                .findByPlate(busPlate)
+                .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
 
-        Bus bus = new Bus();
-        bus.setPlate(busDto.getPlate());
-        bus.setRoute(busDto.getRoute());
-        bus.setStation(busDto.getStation());
         bus.setDriver(driver);
         busRepository.save(bus);
-
         driver.setBus(bus);
         driverRepository.save(driver);
 

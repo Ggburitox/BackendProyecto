@@ -1,6 +1,5 @@
 package com.example.proyectodbp.driver.application;
 
-import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.driver.domain.DriverService;
 import com.example.proyectodbp.driver.dto.DriverDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ public class DriverController {
     }
 
     @PatchMapping("/{id}/bus")
-    public ResponseEntity<DriverDto> patchDriverBus(@PathVariable Long id,@RequestBody BusDto busDto){
-        return ResponseEntity.ok(driverService.updateDriverBus(id, busDto));
+    public ResponseEntity<DriverDto> patchDriverBus(@PathVariable Long id,@RequestBody String busPlate){
+        return ResponseEntity.ok(driverService.updateDriverBus(id, busPlate));
     }
 }
