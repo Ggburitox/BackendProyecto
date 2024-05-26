@@ -1,12 +1,18 @@
 package com.example.proyectodbp.passenger.domain;
 
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
+import com.example.proyectodbp.exceptions.UnauthorizeOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
 import com.example.proyectodbp.station.domain.Station;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
+import com.example.proyectodbp.user.domain.Role;
+import com.example.proyectodbp.user.domain.User;
+import com.example.proyectodbp.user.infraestructure.UserRepository;
+import com.example.proyectodbp.utils.AuthorizationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,11 +21,29 @@ public class PassengerService {
     private PassengerRepository passengerRepository;
     @Autowired
     private StationRepository stationRepository;
+    @Autowired
+    private AuthorizationUtils authorizationUtils;
+    @Autowired
+    private UserRepository<User> userRepository;
 
     public String createPassenger(PassengerDto passengerDto) {
+        // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
+        String username = authorizationUtils.getCurrentUserEmail();
+        if(username == null) {
+            throw new UnauthorizeOperationException("Anonymous User not allowed to access");
+        }
+
+        // Verifica que el usuario actual sea un DRIVER
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getRole() != Role.DRIVER) {
+            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+        }
+
         if (passengerRepository.findByEmail(passengerDto.getEmail()).isPresent()) {
             throw new UniqueResourceAlreadyExist("This driver already exists");
         }
+
         Passenger passenger = new Passenger();
         passenger.setFirstName(passengerDto.getFirstName());
         passenger.setLastName(passengerDto.getLastName());
@@ -30,6 +54,11 @@ public class PassengerService {
     }
 
     public PassengerDto getPassengerInfo(Long id) {
+        // Check if the current user is an admin or the owner of the resource
+        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+        }
+
         Passenger passenger = passengerRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The passenger does not exist"));
@@ -47,6 +76,11 @@ public class PassengerService {
     }
 
     public void updatePassenger(Long id, PassengerDto passengerDto) {
+        // Check if the current user is an admin or the owner of the resource
+        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+        }
+
         Passenger passengerToUpdate = passengerRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The passenger does not exist"));
@@ -58,6 +92,11 @@ public class PassengerService {
     }
 
     public PassengerDto updatePassengerStation(Long id, String stationName) {
+        // Check if the current user is an admin or the owner of the resource
+        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+        }
+
         Passenger passenger = passengerRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The passenger does not exist"));
