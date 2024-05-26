@@ -3,6 +3,7 @@ package com.example.proyectodbp.passenger.domain;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizeOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
+import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
 import com.example.proyectodbp.station.domain.Station;
@@ -11,31 +12,40 @@ import com.example.proyectodbp.user.domain.Role;
 import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
 import com.example.proyectodbp.utils.AuthorizationUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PassengerService {
+    private final PassengerRepository passengerRepository;
+    private final StationRepository stationRepository;
+    private final ModelMapper modelMapper;
+  
     @Autowired
-    private PassengerRepository passengerRepository;
-    @Autowired
-    private StationRepository stationRepository;
+    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository) {
+        this.passengerRepository = passengerRepository;
+        this.stationRepository = stationRepository;
+        this.modelMapper = new ModelMapper();
+    }
+
     @Autowired
     private AuthorizationUtils authorizationUtils;
     @Autowired
     private UserRepository<User> userRepository;
-
-    public String createPassenger(PassengerDto passengerDto) {
+  
+    public String createPassenger(NewPassengerRequestDto passengerDto) {
         // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
         String username = authorizationUtils.getCurrentUserEmail();
         if(username == null) {
             throw new UnauthorizeOperationException("Anonymous User not allowed to access");
         }
-
+  
         // Verifica que el usuario actual sea un DRIVER
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+  
         if(user.getRole() != Role.DRIVER) {
             throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
         }
@@ -43,12 +53,8 @@ public class PassengerService {
         if (passengerRepository.findByEmail(passengerDto.getEmail()).isPresent()) {
             throw new UniqueResourceAlreadyExist("This driver already exists");
         }
-
-        Passenger passenger = new Passenger();
-        passenger.setFirstName(passengerDto.getFirstName());
-        passenger.setLastName(passengerDto.getLastName());
-        passenger.setEmail(passengerDto.getEmail());
-        passenger.setDni(passengerDto.getDni());
+  
+        Passenger passenger = modelMapper.map(passengerDto, Passenger.class);
         passengerRepository.save(passenger);
         return "/passenger/" + passenger.getId();
     }
@@ -63,12 +69,7 @@ public class PassengerService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The passenger does not exist"));
 
-        PassengerDto passengerDto = new PassengerDto();
-        passengerDto.setFirstName(passenger.getFirstName());
-        passengerDto.setLastName(passenger.getLastName());
-        passengerDto.setEmail(passenger.getEmail());
-        passengerDto.setDni(passenger.getDni());
-        return passengerDto;
+        return modelMapper.map(passenger, PassengerDto.class);
     }
 
     public void deletePassenger(Long id) {
@@ -91,12 +92,12 @@ public class PassengerService {
         passengerRepository.save(passengerToUpdate);
     }
 
-    public PassengerDto updatePassengerStation(Long id, String stationName) {
+    public void updatePassengerStation(Long id, String stationName) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
             throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
         }
-
+  
         Passenger passenger = passengerRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The passenger does not exist"));
@@ -108,13 +109,5 @@ public class PassengerService {
         station.getPassengers().add(passenger);
         passengerRepository.save(passenger);
         stationRepository.save(station);
-
-        PassengerDto passengerDto = new PassengerDto();
-        passengerDto.setFirstName(passenger.getFirstName());
-        passengerDto.setLastName(passenger.getLastName());
-        passengerDto.setEmail(passenger.getEmail());
-        passengerDto.setDni(passenger.getDni());
-        passengerDto.setStation(passenger.getStation());
-        return passengerDto;
     }
 }

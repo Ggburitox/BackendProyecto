@@ -12,17 +12,23 @@ import com.example.proyectodbp.user.domain.Role;
 import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
 import com.example.proyectodbp.utils.AuthorizationUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DriverService {
-    @Autowired
-    private DriverRepository driverRepository;
+    private final DriverRepository driverRepository;
+    private final BusRepository busRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private BusRepository busRepository;
+    public DriverService(DriverRepository driverRepository, BusRepository busRepository) {
+        this.driverRepository = driverRepository;
+        this.busRepository = busRepository;
+        this.modelMapper = new ModelMapper();
+    }
 
     @Autowired
     private AuthorizationUtils authorizationUtils;
@@ -41,12 +47,7 @@ public class DriverService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
 
-        DriverDto driverDto = new DriverDto();
-        driverDto.setFirstName(driver.getFirstName());
-        driverDto.setLastName(driver.getLastName());
-        driverDto.setEmail(driver.getEmail());
-        driverDto.setDni(driver.getDni());
-        return driverDto;
+        return modelMapper.map(driver, DriverDto.class);
     }
 
     public String createDriver(NewDriverRequestDto requestDto) {
@@ -66,15 +67,7 @@ public class DriverService {
         if (driverRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new UniqueResourceAlreadyExist("This driver already exists");
         }
-
-        Driver newDriver = new Driver();
-        newDriver.setRole(requestDto.getRole());
-        newDriver.setFirstName(requestDto.getFirstName());
-        newDriver.setLastName(requestDto.getLastName());
-        newDriver.setEmail(requestDto.getEmail());
-        newDriver.setPassword(requestDto.getPassword());
-        newDriver.setDni(requestDto.getDni());
-        newDriver.setBus(requestDto.getBus());
+        Driver newDriver = modelMapper.map(requestDto, Driver.class);
         driverRepository.save(newDriver);
         return "/requestDto/" + newDriver.getId();
     }

@@ -1,8 +1,8 @@
 package com.example.proyectodbp.passenger.application;
 
 import com.example.proyectodbp.passenger.domain.PassengerService;
+import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +11,14 @@ import java.net.URI;
 @Controller
 @RequestMapping("/passenger")
 public class PassengerController {
-    @Autowired
-    private PassengerService passengerService;
+    private final PassengerService passengerService;
+
+    public PassengerController(PassengerService passengerService) {
+        this.passengerService = passengerService;
+    }
 
     @PostMapping()
-    public ResponseEntity<Void> createDriver(@RequestBody PassengerDto passengerDto) {
+    public ResponseEntity<Void> createDriver(@RequestBody NewPassengerRequestDto passengerDto) {
         return ResponseEntity.created(URI.create(passengerService.createPassenger(passengerDto))).build();
     }
 
@@ -37,7 +40,8 @@ public class PassengerController {
     }
 
     @PatchMapping("/{id}/station")
-    public ResponseEntity<PassengerDto> patchPassengerStation(@PathVariable Long id, @RequestBody String stationName) {
-        return ResponseEntity.ok(passengerService.updatePassengerStation(id, stationName));
+    public ResponseEntity<Void> patchPassengerStation(@PathVariable Long id, @RequestBody String stationName) {
+        passengerService.updatePassengerStation(id, stationName);
+        return ResponseEntity.ok().build();
     }
 }

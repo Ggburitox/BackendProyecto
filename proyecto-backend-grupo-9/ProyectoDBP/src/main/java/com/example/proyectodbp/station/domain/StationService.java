@@ -4,29 +4,37 @@ import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizeOperationException;
 import com.example.proyectodbp.route.domain.Route;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
+import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
 import com.example.proyectodbp.user.domain.Role;
 import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
 import com.example.proyectodbp.utils.AuthorizationUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StationService {
+    private final StationRepository stationRepository;
+    private final RouteRepository routeRepository;
+    private final ModelMapper modelMapper;
+
     @Autowired
-    private StationRepository stationRepository;
-    @Autowired
-    private RouteRepository routeRepository;
+    public StationService(StationRepository stationRepository, RouteRepository routeRepository) {
+        this.stationRepository = stationRepository;
+        this.routeRepository = routeRepository;
+        this.modelMapper = new ModelMapper();
+    }
+    
     @Autowired
     private UserRepository<User> userRepository;
     @Autowired
     private AuthorizationUtils authorizationUtils;
 
-    public String createStation(StationDto stationDto) {
-
+    public String createStation(NewStationRequestDto stationDto) {
         String username = authorizationUtils.getCurrentUserEmail();
         if(username == null) {
             throw new UnauthorizeOperationException("Anonymous User not allowed to access");
@@ -38,14 +46,12 @@ public class StationService {
         if(user.getRole() != Role.DRIVER) {
             throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
         }
-
+  
         if (stationRepository.findByName(stationDto.getName()).isPresent()) {
             throw new ResourceNotFoundException("This station already exists");
         }
 
-        Station station = new Station();
-        station.setName(stationDto.getName());
-        station.setRoutes(stationDto.getRoutes());
+        Station station = modelMapper.map(stationDto, Station.class);
         stationRepository.save(station);
         return "/station/" + station.getId();
     }
@@ -59,10 +65,7 @@ public class StationService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
 
-        StationDto stationDto = new StationDto();
-        stationDto.setName(station.getName());
-        stationDto.setRoutes(station.getRoutes());
-        return stationDto;
+        return modelMapper.map(station, StationDto.class);
     }
 
     public void deleteStation(Long id) {
@@ -83,12 +86,12 @@ public class StationService {
         stationRepository.save(stationToUpdate);
     }
 
-    public StationDto addRoute(Long id, String routeName) {
+    public void addRoute(Long id, String routeName) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
             throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
         }
-
+  
         Station station = stationRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
@@ -99,10 +102,5 @@ public class StationService {
         route.getStations().add(station);
         stationRepository.save(station);
         routeRepository.save(route);
-
-        StationDto stationDto = new StationDto();
-        stationDto.setName(station.getName());
-        stationDto.setRoutes(station.getRoutes());
-        return stationDto;
     }
 }
