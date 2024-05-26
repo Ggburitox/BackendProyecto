@@ -11,4 +11,7 @@ import lombok.*;
 public class Driver extends User {
     @OneToOne
     private Bus bus;
+
+    public static void setName(String name) {
+    }
 }
