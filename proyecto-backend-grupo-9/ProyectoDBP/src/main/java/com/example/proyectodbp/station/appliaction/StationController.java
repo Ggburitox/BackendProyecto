@@ -1,8 +1,8 @@
 package com.example.proyectodbp.station.appliaction;
 
 import com.example.proyectodbp.station.domain.StationService;
+import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +11,14 @@ import java.net.URI;
 @Controller
 @RequestMapping("/station")
 public class StationController {
+    private final StationService stationService;
 
-    @Autowired
-    private StationService stationService;
+    public StationController(StationService stationService) {
+        this.stationService = stationService;
+    }
 
     @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody StationDto stationDto){
+    public ResponseEntity<Void> createStation(@RequestBody NewStationRequestDto stationDto){
         return ResponseEntity.created(URI.create(stationService.createStation(stationDto))).build();
     }
 
@@ -38,7 +40,8 @@ public class StationController {
     }
 
     @PatchMapping("/{id}/route")
-    public ResponseEntity<StationDto> addRoute(@PathVariable Long id, @RequestBody String routeName){
-        return ResponseEntity.ok(stationService.addRoute(id, routeName));
+    public ResponseEntity<Void> addRoute(@PathVariable Long id, @RequestBody String routeName){
+        stationService.addRoute(id, routeName);
+        return ResponseEntity.ok().build();
     }
 }

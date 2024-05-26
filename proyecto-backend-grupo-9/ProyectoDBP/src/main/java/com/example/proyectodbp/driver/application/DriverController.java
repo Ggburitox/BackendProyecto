@@ -11,8 +11,13 @@ import java.net.URI;
 @RestController
 @RequestMapping("/driver")
 public class DriverController {
+
+    private final DriverService driverService;
+
     @Autowired
-    private DriverService driverService;
+    public DriverController(DriverService driverService) {
+        this.driverService = driverService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<DriverDto> getDriver(@PathVariable Long id) {
