@@ -1,6 +1,6 @@
 package com.example.proyectodbp.driver.dto;
 
-import com.example.proyectodbp.bus.domain.Bus;
+import com.example.proyectodbp.bus.dto.BusDto;
 import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -25,5 +25,5 @@ public class DriverDto {
     private String dni;
 
     @NotNull
-    private Bus bus;
+    private BusDto bus;
 }
