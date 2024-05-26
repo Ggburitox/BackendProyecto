@@ -3,26 +3,32 @@ package com.example.proyectodbp.station.domain;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.route.domain.Route;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
+import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StationService {
-    @Autowired
-    private StationRepository stationRepository;
-    @Autowired
-    private RouteRepository routeRepository;
+    private final StationRepository stationRepository;
+    private final RouteRepository routeRepository;
+    private final ModelMapper modelMapper;
 
-    public String createStation(StationDto stationDto) {
+    @Autowired
+    public StationService(StationRepository stationRepository, RouteRepository routeRepository) {
+        this.stationRepository = stationRepository;
+        this.routeRepository = routeRepository;
+        this.modelMapper = new ModelMapper();
+    }
+
+    public String createStation(NewStationRequestDto stationDto) {
         if (stationRepository.findByName(stationDto.getName()).isPresent()) {
             throw new ResourceNotFoundException("This station already exists");
         }
 
-        Station station = new Station();
-        station.setName(stationDto.getName());
-        station.setRoutes(stationDto.getRoutes());
+        Station station = modelMapper.map(stationDto, Station.class);
         stationRepository.save(station);
         return "/station/" + station.getId();
     }
@@ -32,10 +38,7 @@ public class StationService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
 
-        StationDto stationDto = new StationDto();
-        stationDto.setName(station.getName());
-        stationDto.setRoutes(station.getRoutes());
-        return stationDto;
+        return modelMapper.map(station, StationDto.class);
     }
 
     public void deleteStation(Long id) {
@@ -51,7 +54,7 @@ public class StationService {
         stationRepository.save(stationToUpdate);
     }
 
-    public StationDto addRoute(Long id, String routeName) {
+    public void addRoute(Long id, String routeName) {
         Station station = stationRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
@@ -62,10 +65,5 @@ public class StationService {
         route.getStations().add(station);
         stationRepository.save(station);
         routeRepository.save(route);
-
-        StationDto stationDto = new StationDto();
-        stationDto.setName(station.getName());
-        stationDto.setRoutes(station.getRoutes());
-        return stationDto;
     }
 }
