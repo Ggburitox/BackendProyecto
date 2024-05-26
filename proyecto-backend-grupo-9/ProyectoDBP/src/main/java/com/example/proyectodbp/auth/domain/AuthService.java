@@ -1,12 +1,11 @@
-package com.example.proyectodbp.Auth.domain;
+package com.example.proyectodbp.auth.domain;
 
 
-import Config.JwtAuthenticationFilter;
-import Config.JwtService;
-import com.example.proyectodbp.Auth.dto.JwtAuthResponse;
-import com.example.proyectodbp.Auth.dto.LoginRequest;
-import com.example.proyectodbp.Auth.dto.RegisterRequest;
-import com.example.proyectodbp.Auth.exceptions.UserAlreadyExistException;
+import com.example.proyectodbp.config.JwtService;
+import com.example.proyectodbp.auth.dto.JwtAuthResponse;
+import com.example.proyectodbp.auth.dto.LoginRequest;
+import com.example.proyectodbp.auth.dto.RegisterRequest;
+import com.example.proyectodbp.auth.exceptions.UserAlreadyExistException;
 import com.example.proyectodbp.driver.domain.Driver;
 import com.example.proyectodbp.passenger.domain.Passenger;
 import com.example.proyectodbp.user.domain.Role;
@@ -14,7 +13,6 @@ import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

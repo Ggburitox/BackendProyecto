@@ -1,4 +1,4 @@
-package com.example.proyectodbp.Auth.exceptions;
+package com.example.proyectodbp.auth.exceptions;
 
 
 

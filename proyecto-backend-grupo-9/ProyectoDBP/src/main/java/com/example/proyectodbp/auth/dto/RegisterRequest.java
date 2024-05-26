@@ -1,4 +1,4 @@
-package com.example.proyectodbp.Auth.dto;
+package com.example.proyectodbp.auth.dto;
 
 
 import lombok.Data;

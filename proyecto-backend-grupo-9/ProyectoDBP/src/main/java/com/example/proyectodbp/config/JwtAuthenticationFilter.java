@@ -1,4 +1,4 @@
-package Config;
+package com.example.proyectodbp.config;
 
 
 import jakarta.servlet.FilterChain;
