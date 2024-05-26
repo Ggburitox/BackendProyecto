@@ -2,6 +2,7 @@ package com.example.proyectodbp.bus.application;
 
 import com.example.proyectodbp.bus.domain.BusService;
 import com.example.proyectodbp.bus.dto.BusDto;
+import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,12 +11,16 @@ import java.net.URI;
 @RestController
 @RequestMapping("/bus")
 public class BusController {
+    private final BusService busService;
+
     @Autowired
-    private BusService busService;
+    public BusController(BusService busService) {
+        this.busService = busService;
+    }
 
     @PostMapping()
-    public ResponseEntity<Void> createBus(@RequestBody BusDto busdto) {
-        return ResponseEntity.created(URI.create(busService.createBus(busdto))).build();
+    public ResponseEntity<Void> createBus(@RequestBody NewBusRequestDto busDto) {
+        return ResponseEntity.created(URI.create(busService.createBus(busDto))).build();
     }
 
     @GetMapping("/{id}")
@@ -36,7 +41,8 @@ public class BusController {
     }
 
     @PatchMapping("/{id}/route")
-    public ResponseEntity<BusDto> patchBusRoute(@PathVariable Long id, @RequestBody String routeName){
-        return ResponseEntity.ok(busService.updateBusRoute(id, routeName));
+    public ResponseEntity<Void> patchBusRoute(@PathVariable Long id, @RequestBody String routeName){
+        busService.updateBusRoute(id, routeName);
+        return ResponseEntity.ok().build();
     }
 }

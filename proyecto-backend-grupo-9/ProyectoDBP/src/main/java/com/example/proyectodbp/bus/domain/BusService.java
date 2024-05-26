@@ -1,30 +1,33 @@
 package com.example.proyectodbp.bus.domain;
 
 import com.example.proyectodbp.bus.dto.BusDto;
+import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.route.domain.Route;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BusService {
-    @Autowired
-    private BusRepository busRepository;
-    @Autowired
-    private RouteRepository routeRepository;
+    private final BusRepository busRepository;
+    private final RouteRepository routeRepository;
+    private final ModelMapper modelMapper;
 
-    public String createBus(BusDto Busdto) {
-        if (busRepository.findByPlate(Busdto.getPlate()).isPresent()) {
+    @Autowired
+    public BusService(BusRepository busRepository, RouteRepository routeRepository) {
+        this.busRepository = busRepository;
+        this.routeRepository = routeRepository;
+        this.modelMapper = new ModelMapper();
+    }
+
+    public String createBus(NewBusRequestDto busDto) {
+        if (busRepository.findByPlate(busDto.getPlate()).isPresent()) {
             throw new ResourceNotFoundException("This bus already exists");
         }
-
-        Bus newBus = new Bus();
-        newBus.setPlate(Busdto.getPlate());
-        newBus.setRoute(Busdto.getRoute());
-        newBus.setStation(Busdto.getStation());
-        busRepository.save(newBus);
+        Bus newBus = modelMapper.map(busDto, Bus.class);
         return "/driver/"+newBus.getId();
     }
 
@@ -33,11 +36,7 @@ public class BusService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
 
-        BusDto busDto = new BusDto();
-        busDto.setPlate(bus.getPlate());
-        busDto.setRoute(bus.getRoute());
-        busDto.setStation(bus.getStation());
-        return busDto;
+        return modelMapper.map(bus, BusDto.class);
     }
 
     public void deleteBus(Long id) {
@@ -55,7 +54,7 @@ public class BusService {
         busRepository.save(busToUpdate);
     }
 
-    public BusDto updateBusRoute(Long id, String routeName) {
+    public void updateBusRoute(Long id, String routeName) {
         Bus bus = busRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
@@ -63,15 +62,10 @@ public class BusService {
         Route route = routeRepository
                 .findByName(routeName)
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
+
         bus.setRoute(route);
         route.getBuses().add(bus);
         busRepository.save(bus);
         routeRepository.save(route);
-
-        BusDto busDto = new BusDto();
-        busDto.setPlate(bus.getPlate());
-        busDto.setRoute(bus.getRoute());
-        busDto.setStation(bus.getStation());
-        return busDto;
     }
 }
