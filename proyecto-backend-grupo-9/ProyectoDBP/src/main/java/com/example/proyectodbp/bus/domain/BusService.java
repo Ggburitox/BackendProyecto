@@ -4,11 +4,17 @@ import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
+import com.example.proyectodbp.exceptions.UnauthorizeOperationException;
 import com.example.proyectodbp.route.domain.Route;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
+import com.example.proyectodbp.user.domain.Role;
+import com.example.proyectodbp.user.domain.User;
+import com.example.proyectodbp.user.infraestructure.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import com.example.proyectodbp.utils.AuthorizationUtils;
 
 @Service
 public class BusService {
@@ -22,8 +28,23 @@ public class BusService {
         this.routeRepository = routeRepository;
         this.modelMapper = new ModelMapper();
     }
-
+  
+    @Autowired
+    AuthorizationUtils authorizationUtils;
+  
     public String createBus(NewBusRequestDto busDto) {
+         // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
+        String username = authorizationUtils.getCurrentUserEmail();
+        if(username == null) {
+            throw new UnauthorizeOperationException("Anonymous User not allowed to access");
+        }
+
+        // Verifica que el usuario actual sea un DRIVER
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getRole() != Role.DRIVER) {
+            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+        }
         if (busRepository.findByPlate(busDto.getPlate()).isPresent()) {
             throw new ResourceNotFoundException("This bus already exists");
         }
@@ -32,9 +53,13 @@ public class BusService {
     }
 
     public BusDto getBus(Long id) {
+        // Verifica si el usuario actual es un administrador o el propietario del recurso
+        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+        }
         Bus bus = busRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Este bus no existe"));
 
         return modelMapper.map(bus, BusDto.class);
     }
@@ -44,6 +69,10 @@ public class BusService {
     }
 
     public void updateBus(Long id, BusDto busDto) {
+        // Check if the current user is an admin or the owner of the resource
+        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+        }
         Bus busToUpdate = busRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
@@ -55,6 +84,10 @@ public class BusService {
     }
 
     public void updateBusRoute(Long id, String routeName) {
+        // Check if the current user is an admin or the owner of the resource
+        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+        }
         Bus bus = busRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
