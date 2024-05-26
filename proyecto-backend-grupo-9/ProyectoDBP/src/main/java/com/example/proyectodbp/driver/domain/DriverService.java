@@ -21,20 +21,18 @@ import org.springframework.stereotype.Service;
 public class DriverService {
     private final DriverRepository driverRepository;
     private final BusRepository busRepository;
+    private final UserRepository<User> userRepository;
+    private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public DriverService(DriverRepository driverRepository, BusRepository busRepository) {
+    public DriverService(DriverRepository driverRepository, BusRepository busRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils) {
         this.driverRepository = driverRepository;
         this.busRepository = busRepository;
+        this.userRepository = userRepository;
+        this.authorizationUtils = authorizationUtils;
         this.modelMapper = new ModelMapper();
     }
-
-    @Autowired
-    private AuthorizationUtils authorizationUtils;
-
-    @Autowired
-    private UserRepository<User> userRepository;
 
 
     public DriverDto getDriverInfo(Long id) {

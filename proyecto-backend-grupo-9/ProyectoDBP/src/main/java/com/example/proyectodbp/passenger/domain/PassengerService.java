@@ -13,7 +13,6 @@ import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
 import com.example.proyectodbp.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +20,17 @@ import org.springframework.stereotype.Service;
 public class PassengerService {
     private final PassengerRepository passengerRepository;
     private final StationRepository stationRepository;
+    private final UserRepository<User> userRepository;
+    private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper;
-  
-    @Autowired
-    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository) {
+
+    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils, ModelMapper modelMapper) {
         this.passengerRepository = passengerRepository;
         this.stationRepository = stationRepository;
-        this.modelMapper = new ModelMapper();
+        this.userRepository = userRepository;
+        this.authorizationUtils = authorizationUtils;
+        this.modelMapper = modelMapper;
     }
-
-    @Autowired
-    private AuthorizationUtils authorizationUtils;
-    @Autowired
-    private UserRepository<User> userRepository;
   
     public String createPassenger(NewPassengerRequestDto passengerDto) {
         // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security

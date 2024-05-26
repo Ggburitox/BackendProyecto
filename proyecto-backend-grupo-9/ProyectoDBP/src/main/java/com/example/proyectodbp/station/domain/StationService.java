@@ -12,7 +12,6 @@ import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
 import com.example.proyectodbp.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +19,17 @@ import org.springframework.stereotype.Service;
 public class StationService {
     private final StationRepository stationRepository;
     private final RouteRepository routeRepository;
+    private final UserRepository<User> userRepository;
+    private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper;
 
-    @Autowired
-    public StationService(StationRepository stationRepository, RouteRepository routeRepository) {
+    public StationService(StationRepository stationRepository, RouteRepository routeRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils, ModelMapper modelMapper) {
         this.stationRepository = stationRepository;
         this.routeRepository = routeRepository;
-        this.modelMapper = new ModelMapper();
+        this.userRepository = userRepository;
+        this.authorizationUtils = authorizationUtils;
+        this.modelMapper = modelMapper;
     }
-    
-    @Autowired
-    private UserRepository<User> userRepository;
-    @Autowired
-    private AuthorizationUtils authorizationUtils;
 
     public String createStation(NewStationRequestDto stationDto) {
         String username = authorizationUtils.getCurrentUserEmail();

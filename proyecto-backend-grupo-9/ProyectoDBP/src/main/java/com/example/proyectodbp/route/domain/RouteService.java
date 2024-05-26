@@ -20,19 +20,18 @@ import org.springframework.stereotype.Service;
 public class RouteService{
     private final RouteRepository routeRepository;
     private final StationRepository stationRepository;
+    private final UserRepository<User> userRepository;
+    private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public RouteService(RouteRepository routeRepository, StationRepository stationRepository) {
+    public RouteService(RouteRepository routeRepository, StationRepository stationRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils) {
         this.routeRepository = routeRepository;
         this.stationRepository = stationRepository;
+        this.userRepository = userRepository;
+        this.authorizationUtils = authorizationUtils;
         this.modelMapper = new ModelMapper();
     }
-  
-    @Autowired
-    private UserRepository<User> userRepository;
-    @Autowired
-    private AuthorizationUtils authorizationUtils;
 
     public String createRoute(NewRouteRequestDto routeDto) {
         // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
