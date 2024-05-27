@@ -16,6 +16,6 @@ public class EmailListener {
     @EventListener
     @Async
     public void handleHelloEmailEvent(HelloEmailEvent event) {
-        emailService.sendSimpleMessage(event.getEmail(), "Ride Created", "Your ride has been created!");
+        emailService.sendSimpleMessage(event.getEmail(),"UPDATE" ,event.getMessage());
     }
 }
