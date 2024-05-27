@@ -5,6 +5,7 @@ import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.driver.dto.DriverDto;
 import com.example.proyectodbp.driver.dto.NewDriverRequestDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
+import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
@@ -14,6 +15,7 @@ import com.example.proyectodbp.user.infraestructure.UserRepository;
 import com.example.proyectodbp.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +26,15 @@ public class DriverService {
     private final UserRepository<User> userRepository;
     private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public DriverService(DriverRepository driverRepository, BusRepository busRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils) {
+    public DriverService(DriverRepository driverRepository, BusRepository busRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher) {
         this.driverRepository = driverRepository;
         this.busRepository = busRepository;
         this.userRepository = userRepository;
         this.authorizationUtils = authorizationUtils;
+        this.applicationEventPublisher = applicationEventPublisher;
         this.modelMapper = new ModelMapper();
     }
 
@@ -107,5 +111,7 @@ public class DriverService {
         driver.setBus(bus);
         busRepository.save(bus);
         driverRepository.save(driver);
+        String message = "Su bus ha sido actualizado!";
+        applicationEventPublisher.publishEvent(new HelloEmailEvent(driver.getEmail(), message));
     }
 }
