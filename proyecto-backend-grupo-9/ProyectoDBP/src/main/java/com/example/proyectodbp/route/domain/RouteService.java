@@ -1,7 +1,7 @@
 package com.example.proyectodbp.route.domain;
 
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
-import com.example.proyectodbp.exceptions.UnauthorizeOperationException;
+import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.route.dto.NewRouteRequestDto;
 import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
@@ -37,14 +37,14 @@ public class RouteService{
         // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
         String username = authorizationUtils.getCurrentUserEmail();
         if(username == null) {
-            throw new UnauthorizeOperationException("Anonymous User not allowed to access");
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
         }
 
         // Verifica que el usuario actual sea un DRIVER
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if(user.getRole() != Role.DRIVER) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
   
         if (routeRepository.findByName(routeDto.getName()).isPresent()) {
@@ -57,7 +57,7 @@ public class RouteService{
     public RouteDto getRouteInfo(Long id) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
         Route route = routeRepository
@@ -74,7 +74,7 @@ public class RouteService{
     public void updateRoute(Long id, RouteDto routeDto) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
         Route routeToUpdate = routeRepository
@@ -87,7 +87,7 @@ public class RouteService{
 
     public void addStation(Long id, String stationName) {
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
   
         Route route = routeRepository

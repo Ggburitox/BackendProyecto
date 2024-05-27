@@ -5,7 +5,7 @@ import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.driver.dto.DriverDto;
 import com.example.proyectodbp.driver.dto.NewDriverRequestDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
-import com.example.proyectodbp.exceptions.UnauthorizeOperationException;
+import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.user.domain.Role;
@@ -38,7 +38,7 @@ public class DriverService {
     public DriverDto getDriverInfo(Long id) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
         Driver driver = driverRepository
@@ -52,14 +52,14 @@ public class DriverService {
         // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
         String username = authorizationUtils.getCurrentUserEmail();
         if(username == null) {
-            throw new UnauthorizeOperationException("Anonymous User not allowed to access");
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
         }
 
         // Verifica que el usuario actual sea un DRIVER
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if(user.getRole() != Role.DRIVER) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
         if (driverRepository.findByEmail(requestDto.getEmail()).isPresent()) {
@@ -77,7 +77,7 @@ public class DriverService {
     public void updateDriver(Long id, DriverDto driver) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
         Driver driverToUpdate = driverRepository
@@ -93,7 +93,7 @@ public class DriverService {
     public void updateDriverBus(Long id, String busPlate) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
         Driver driver = driverRepository

@@ -1,7 +1,7 @@
 package com.example.proyectodbp.passenger.domain;
 
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
-import com.example.proyectodbp.exceptions.UnauthorizeOperationException;
+import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
@@ -36,7 +36,7 @@ public class PassengerService {
         // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
         String username = authorizationUtils.getCurrentUserEmail();
         if(username == null) {
-            throw new UnauthorizeOperationException("Anonymous User not allowed to access");
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
         }
   
         // Verifica que el usuario actual sea un DRIVER
@@ -44,7 +44,7 @@ public class PassengerService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   
         if(user.getRole() != Role.DRIVER) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
         if (passengerRepository.findByEmail(passengerDto.getEmail()).isPresent()) {
@@ -59,7 +59,7 @@ public class PassengerService {
     public PassengerDto getPassengerInfo(Long id) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
         Passenger passenger = passengerRepository
@@ -76,7 +76,7 @@ public class PassengerService {
     public void updatePassenger(Long id, PassengerDto passengerDto) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
         Passenger passengerToUpdate = passengerRepository
@@ -92,7 +92,7 @@ public class PassengerService {
     public void updatePassengerStation(Long id, String stationName) {
         // Check if the current user is an admin or the owner of the resource
         if(!authorizationUtils.isAdminOrResourceOwner(id)) {
-            throw new UnauthorizeOperationException("No estas autorizado para acceder a este recurso");
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
   
         Passenger passenger = passengerRepository
