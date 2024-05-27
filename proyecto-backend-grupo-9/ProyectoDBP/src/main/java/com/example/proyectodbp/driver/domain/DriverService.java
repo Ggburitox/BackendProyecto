@@ -80,7 +80,15 @@ public class DriverService {
 
     public void updateDriver(Long id, DriverDto driver) {
         // Check if the current user is an admin or the owner of the resource
-        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+        String username = authorizationUtils.getCurrentUserEmail();
+        if(username == null) {
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
+        }
+
+        // Verifica que el usuario actual sea un DRIVER
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getRole() != Role.DRIVER) {
             throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
@@ -92,11 +100,21 @@ public class DriverService {
         driverToUpdate.setEmail(driver.getEmail());
         driverToUpdate.setDni(driver.getDni());
         driverRepository.save(driverToUpdate);
+        String message = "Sus datos han sido actualizados!";
+        applicationEventPublisher.publishEvent(new HelloEmailEvent(driver.getEmail(), message));
     }
 
     public void updateDriverBus(Long id, String busPlate) {
         // Check if the current user is an admin or the owner of the resource
-        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+        String username = authorizationUtils.getCurrentUserEmail();
+        if(username == null) {
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
+        }
+
+        // Verifica que el usuario actual sea un DRIVER
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getRole() != Role.DRIVER) {
             throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 

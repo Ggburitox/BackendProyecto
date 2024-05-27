@@ -1,5 +1,6 @@
 package com.example.proyectodbp.passenger.domain;
 
+import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
@@ -13,6 +14,7 @@ import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
 import com.example.proyectodbp.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +25,14 @@ public class PassengerService {
     private final UserRepository<User> userRepository;
     private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils, ModelMapper modelMapper) {
+    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils, ModelMapper modelMapper, ApplicationEventPublisher applicationEventPublisher) {
         this.passengerRepository = passengerRepository;
         this.stationRepository = stationRepository;
         this.userRepository = userRepository;
         this.authorizationUtils = authorizationUtils;
+        this.applicationEventPublisher = applicationEventPublisher;
         this.modelMapper = modelMapper;
     }
   
@@ -106,5 +110,7 @@ public class PassengerService {
         station.getPassengers().add(passenger);
         passengerRepository.save(passenger);
         stationRepository.save(station);
+        String message = "The passenger station has been updated to " + stationName;
+        applicationEventPublisher.publishEvent(new HelloEmailEvent(passenger.getEmail(), message));
     }
 }

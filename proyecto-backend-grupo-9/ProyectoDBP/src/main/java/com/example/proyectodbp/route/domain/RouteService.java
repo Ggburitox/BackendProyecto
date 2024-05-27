@@ -1,5 +1,6 @@
 package com.example.proyectodbp.route.domain;
 
+import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.route.dto.NewRouteRequestDto;
@@ -13,6 +14,7 @@ import com.example.proyectodbp.user.infraestructure.UserRepository;
 import com.example.proyectodbp.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +26,15 @@ public class RouteService{
     private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
+
     @Autowired
-    public RouteService(RouteRepository routeRepository, StationRepository stationRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils) {
+    public RouteService(RouteRepository routeRepository, StationRepository stationRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils, ModelMapper modelMapper, ApplicationEventPublisher applicationEventPublisher) {
         this.routeRepository = routeRepository;
         this.stationRepository = stationRepository;
         this.userRepository = userRepository;
         this.authorizationUtils = authorizationUtils;
+        this.applicationEventPublisher = applicationEventPublisher;
         this.modelMapper = new ModelMapper();
     }
 
@@ -51,12 +56,22 @@ public class RouteService{
             throw new ResourceNotFoundException("This route already exists");
         }
         Route route = modelMapper.map(routeDto, Route.class);
+        String message = "Route created successfully";
+        applicationEventPublisher.publishEvent(new HelloEmailEvent(user.getEmail(), message));
         return "/routes/" + route.getId();
     }
 
     public RouteDto getRouteInfo(Long id) {
         // Check if the current user is an admin or the owner of the resource
-        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+        String username = authorizationUtils.getCurrentUserEmail();
+        if(username == null) {
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
+        }
+
+        // Verifica que el usuario actual sea un DRIVER
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getRole() != Role.DRIVER) {
             throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
@@ -73,7 +88,15 @@ public class RouteService{
 
     public void updateRoute(Long id, RouteDto routeDto) {
         // Check if the current user is an admin or the owner of the resource
-        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+        String username = authorizationUtils.getCurrentUserEmail();
+        if(username == null) {
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
+        }
+
+        // Verifica que el usuario actual sea un DRIVER
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getRole() != Role.DRIVER) {
             throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
@@ -86,7 +109,15 @@ public class RouteService{
     }
 
     public void addStation(Long id, String stationName) {
-        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+        String username = authorizationUtils.getCurrentUserEmail();
+        if(username == null) {
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
+        }
+
+        // Verifica que el usuario actual sea un DRIVER
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getRole() != Role.DRIVER) {
             throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
   
@@ -100,5 +131,7 @@ public class RouteService{
         station.getRoutes().add(route);
         routeRepository.save(route);
         stationRepository.save(station);
+        String message = "Station added successfully";
+        applicationEventPublisher.publishEvent(new HelloEmailEvent(user.getEmail(), message));
     }
 }
