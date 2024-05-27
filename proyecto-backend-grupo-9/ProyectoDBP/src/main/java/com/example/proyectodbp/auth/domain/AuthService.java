@@ -58,6 +58,7 @@ public class AuthService {
             Driver driver = new Driver();
             driver.setRole(Role.DRIVER);
             driver.setFirstName(request.getName());
+            driver.setLastName(request.getLastName());
             driver.setEmail(request.getEmail());
             driver.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -72,6 +73,7 @@ public class AuthService {
             Passenger passenger = new Passenger();
             passenger.setRole(Role.PASSENGER);
             passenger.setFirstName(request.getName());
+            passenger.setLastName(request.getLastName());
             passenger.setEmail(request.getEmail());
             passenger.setPassword(passwordEncoder.encode(request.getPassword()));
 
