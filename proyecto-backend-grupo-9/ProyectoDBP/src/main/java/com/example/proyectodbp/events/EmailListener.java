@@ -1,15 +1,17 @@
 package com.example.proyectodbp.events;
 
 import com.example.proyectodbp.email.domain.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EmailListener {
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
+
+    public EmailListener(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @EventListener
     @Async

@@ -28,7 +28,6 @@ public class AuthService {
     private final ModelMapper modelMapper;
 
     @Autowired
-
     public AuthService(UserRepository<User> userRepository, JwtService jwtService, PasswordEncoder  passwordEncoder){
         this.userRepository = userRepository;
         this.jwtService = jwtService;

@@ -10,7 +10,6 @@ import lombok.Data;
 
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.Set;
 
 
 @Entity
@@ -27,10 +26,10 @@ public class Station {
     private String name;
 
     @ManyToMany(mappedBy = "stations")
-    private Set<Route> routes;
+    private List<Route> routes;
 
     @OneToMany(mappedBy = "station")
-    private Set<Bus> buses;
+    private List<Bus> buses;
 
     @OneToMany
     private List<Passenger> passengers;

@@ -1,37 +1,37 @@
-package com.example.proyectodbp.driver.dto;
+package com.example.proyectodbp.passenger.dto;
 
-import com.example.proyectodbp.bus.domain.Bus;
+import com.example.proyectodbp.station.domain.Station;
 import com.example.proyectodbp.user.domain.Role;
 import lombok.Data;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class NewDriverRequestDto {
+public class NewPassengerRequestDto {
     @NotNull
-    private Role role = Role.DRIVER;
+    private Role role = Role.PASSENGER;
 
-    @Size(min = 2, max = 50)
     @NotNull
+    @Size(min = 2, max = 50)
     private String firstName;
 
-    @Size(min = 2, max = 50)
     @NotNull
+    @Size(min = 2, max = 50)
     private String lastName;
 
-    @Email
     @NotNull
+    @Email
     private String email;
 
-    @Size(min = 5, max = 20)
     @NotNull
     private String password;
 
-    @Size(min = 8, max = 8)
     @NotNull
+    @Size(min = 8, max = 8)
     private String dni;
 
     @NotNull
-    private Bus bus;
+    private Station station;
 }

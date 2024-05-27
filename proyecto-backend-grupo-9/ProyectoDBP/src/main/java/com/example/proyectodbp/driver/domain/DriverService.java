@@ -3,54 +3,83 @@ package com.example.proyectodbp.driver.domain;
 import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.driver.dto.DriverDto;
+import com.example.proyectodbp.driver.dto.NewDriverRequestDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
+import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
+import com.example.proyectodbp.user.domain.Role;
+import com.example.proyectodbp.user.domain.User;
+import com.example.proyectodbp.user.infraestructure.UserRepository;
+import com.example.proyectodbp.utils.AuthorizationUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DriverService {
-    @Autowired
-    private DriverRepository driverRepository;
+    private final DriverRepository driverRepository;
+    private final BusRepository busRepository;
+    private final UserRepository<User> userRepository;
+    private final AuthorizationUtils authorizationUtils;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private BusRepository busRepository;
+    public DriverService(DriverRepository driverRepository, BusRepository busRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils) {
+        this.driverRepository = driverRepository;
+        this.busRepository = busRepository;
+        this.userRepository = userRepository;
+        this.authorizationUtils = authorizationUtils;
+        this.modelMapper = new ModelMapper();
+    }
+
 
     public DriverDto getDriverInfo(Long id) {
+        // Check if the current user is an admin or the owner of the resource
+        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
+        }
+
         Driver driver = driverRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
 
-        DriverDto driverDto = new DriverDto();
-        driverDto.setFirstName(driver.getFirstName());
-        driverDto.setLastName(driver.getLastName());
-        driverDto.setEmail(driver.getEmail());
-        driverDto.setDni(driver.getDni());
-        return driverDto;
+        return modelMapper.map(driver, DriverDto.class);
     }
 
-    public String createDriver(DriverDto driver) {
-        if (driverRepository.findByEmail(driver.getEmail()).isPresent()) {
+    public String createDriver(NewDriverRequestDto requestDto) {
+        // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
+        String username = authorizationUtils.getCurrentUserEmail();
+        if(username == null) {
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
+        }
+
+        // Verifica que el usuario actual sea un DRIVER
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getRole() != Role.DRIVER) {
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
+        }
+
+        if (driverRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new UniqueResourceAlreadyExist("This driver already exists");
         }
-        Driver newDriver = new Driver();
-        newDriver.setFirstName(driver.getFirstName());
-        newDriver.setLastName(driver.getLastName());
-        newDriver.setEmail(driver.getEmail());
-        newDriver.setDni(driver.getDni());
+        Driver newDriver = modelMapper.map(requestDto, Driver.class);
         driverRepository.save(newDriver);
-        return "/driver/" + newDriver.getId();
+        return "/requestDto/" + newDriver.getId();
     }
 
     public void deleteDriver(Long id) {
-        Driver driver = driverRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("driver not found"));
-        driverRepository.delete(driver);
+        driverRepository.deleteById(id);
     }
 
     public void updateDriver(Long id, DriverDto driver) {
+        // Check if the current user is an admin or the owner of the resource
+        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
+        }
+
         Driver driverToUpdate = driverRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
@@ -61,7 +90,12 @@ public class DriverService {
         driverRepository.save(driverToUpdate);
     }
 
-    public DriverDto updateDriverBus(Long id, String busPlate) {
+    public void updateDriverBus(Long id, String busPlate) {
+        // Check if the current user is an admin or the owner of the resource
+        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
+        }
+
         Driver driver = driverRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
@@ -73,13 +107,5 @@ public class DriverService {
         driver.setBus(bus);
         busRepository.save(bus);
         driverRepository.save(driver);
-
-        DriverDto driverDto = new DriverDto();
-        driverDto.setFirstName(driver.getFirstName());
-        driverDto.setLastName(driver.getLastName());
-        driverDto.setEmail(driver.getEmail());
-        driverDto.setDni(driver.getDni());
-        driverDto.setBus(bus);
-        return driverDto;
     }
 }
