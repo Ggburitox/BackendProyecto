@@ -42,14 +42,14 @@ public class PassengerService {
         if(username == null) {
             throw new UnauthorizedOperationException("Anonymous User not allowed to access");
         }
-  
+
         // Verifica que el usuario actual sea un DRIVER
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-  
+
         if(user.getRole() != Role.DRIVER) {
-            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
-        }
+           throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
+       }
 
         if (passengerRepository.findByEmail(passengerDto.getEmail()).isPresent()) {
             throw new UniqueResourceAlreadyExist("This driver already exists");
