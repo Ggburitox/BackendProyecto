@@ -5,7 +5,7 @@ import com.example.proyectodbp.config.JwtService;
 import com.example.proyectodbp.auth.dto.JwtAuthResponse;
 import com.example.proyectodbp.auth.dto.LoginRequest;
 import com.example.proyectodbp.auth.dto.RegisterRequest;
-import com.example.proyectodbp.auth.exceptions.UserAlreadyExistException;
+import com.example.proyectodbp.exceptions.UserAlreadyExistException;
 import com.example.proyectodbp.driver.domain.Driver;
 import com.example.proyectodbp.passenger.domain.Passenger;
 import com.example.proyectodbp.user.domain.Role;

@@ -7,6 +7,6 @@ public class RegisterRequest {
     private String name;
     private String email;
     private String password;
-    private String LastName;
+    private String lastName;
     private Boolean isDriver=false;
 }
