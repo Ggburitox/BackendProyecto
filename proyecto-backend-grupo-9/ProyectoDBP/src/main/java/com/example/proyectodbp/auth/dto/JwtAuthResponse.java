@@ -1,8 +1,6 @@
 package com.example.proyectodbp.auth.dto;
 
-
 import lombok.Data;
-
 
 @Data
 public class JwtAuthResponse {
