@@ -1,13 +1,14 @@
 package com.example.proyectodbp.auth.domain;
 
-
 import com.example.proyectodbp.config.JwtService;
 import com.example.proyectodbp.auth.dto.JwtAuthResponse;
 import com.example.proyectodbp.auth.dto.LoginRequest;
 import com.example.proyectodbp.auth.dto.RegisterRequest;
+import com.example.proyectodbp.driver.infraestructure.DriverRepository;
 import com.example.proyectodbp.exceptions.UserAlreadyExistException;
 import com.example.proyectodbp.driver.domain.Driver;
 import com.example.proyectodbp.passenger.domain.Passenger;
+import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
 import com.example.proyectodbp.user.domain.Role;
 import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
@@ -26,17 +27,20 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final DriverRepository driverRepository;
+    private final PassengerRepository passengerRepository;
 
     @Autowired
-    public AuthService(UserRepository<User> userRepository, JwtService jwtService, PasswordEncoder  passwordEncoder){
+    public AuthService(UserRepository<User> userRepository, JwtService jwtService, PasswordEncoder  passwordEncoder, DriverRepository driverRepository, PassengerRepository passengerRepository){
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = new ModelMapper();
+        this.driverRepository = driverRepository;
+        this.passengerRepository = passengerRepository;
     }
     public JwtAuthResponse login(LoginRequest request){
-        Optional<User> user;
-        user = userRepository.findByEmail(request.getEmail());
+        Optional<User> user = userRepository.findByEmail(request.getEmail());
 
         if (user.isEmpty()) throw new UsernameNotFoundException("Email is not registered");
 
@@ -61,7 +65,7 @@ public class AuthService {
             driver.setEmail(request.getEmail());
             driver.setPassword(passwordEncoder.encode(request.getPassword()));
 
-            userRepository.save(driver);
+            driverRepository.save(driver);
 
             JwtAuthResponse response = new JwtAuthResponse();
             response.setToken(jwtService.generateToken(driver));
@@ -76,7 +80,7 @@ public class AuthService {
             passenger.setEmail(request.getEmail());
             passenger.setPassword(passwordEncoder.encode(request.getPassword()));
 
-            userRepository.save(passenger);
+            passengerRepository.save(passenger);
 
             JwtAuthResponse response = new JwtAuthResponse();
             response.setToken(jwtService.generateToken(passenger));
