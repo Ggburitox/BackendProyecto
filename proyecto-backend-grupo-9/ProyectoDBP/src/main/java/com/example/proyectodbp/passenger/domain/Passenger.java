@@ -13,5 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Passenger extends User {
     @ManyToOne
+    @JoinColumn(name = "station_id")
     private Station station;
 }

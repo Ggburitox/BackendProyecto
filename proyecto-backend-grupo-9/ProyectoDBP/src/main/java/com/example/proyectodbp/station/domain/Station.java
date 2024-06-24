@@ -25,12 +25,12 @@ public class Station {
     @Size(min = 2, max = 50)
     private String name;
 
-    @ManyToMany(mappedBy = "stations")
+    @ManyToMany(mappedBy = "routes")
     private List<Route> routes;
 
-    @OneToMany(mappedBy = "station")
+    @OneToMany(mappedBy = "buses")
     private List<Bus> buses;
 
-    @OneToMany
+    @OneToMany(mappedBy = "passenger")
     private List<Passenger> passengers;
 }

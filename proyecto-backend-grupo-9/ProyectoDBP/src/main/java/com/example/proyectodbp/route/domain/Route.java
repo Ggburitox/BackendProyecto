@@ -23,9 +23,10 @@ public class Route {
     @Size(min = 1, max = 50)
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "buses")
     private List<Bus> buses;
 
     @ManyToMany
+    @JoinColumn(name = "station_id")
     private List<Station> stations;
 }

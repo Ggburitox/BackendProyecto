@@ -26,8 +26,10 @@ public class Bus {
     private Driver driver;
 
     @ManyToOne
+    @JoinColumn(name = "route_id")
     private Route route;
 
     @ManyToOne
+    @JoinColumn(name = "station_id")
     private Station station;
 }
