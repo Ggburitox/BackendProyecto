@@ -41,7 +41,14 @@ public class DriverService {
 
     public DriverDto getDriverInfo(Long id) {
         // Check if the current user is an admin or the owner of the resource
-        if(!authorizationUtils.isAdminOrResourceOwner(id)) {
+        String username = authorizationUtils.getCurrentUserEmail();
+        if(username == null) {
+            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
+        }
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(!authorizationUtils.isAdminOrResourceOwner(user.getId())) {
             throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
         }
 
