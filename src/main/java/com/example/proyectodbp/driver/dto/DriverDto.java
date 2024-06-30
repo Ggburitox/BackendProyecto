@@ -20,10 +20,6 @@ public class DriverDto {
     @NotNull
     private String email;
 
-    @Size(min = 8, max = 8)
-    @NotNull
-    private String dni;
-
     @NotNull
     private BusDto bus;
 }

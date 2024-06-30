@@ -89,7 +89,6 @@ public class PassengerService {
         passengerToUpdate.setFirstName(passengerDto.getFirstName());
         passengerToUpdate.setLastName(passengerDto.getLastName());
         passengerToUpdate.setEmail(passengerDto.getEmail());
-        passengerToUpdate.setDni(passengerDto.getDni());
         passengerRepository.save(passengerToUpdate);
     }
 

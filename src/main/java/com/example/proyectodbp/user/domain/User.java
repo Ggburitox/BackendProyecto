@@ -41,10 +41,6 @@ public class User implements UserDetails {
     @Size(min = 5, max = 20)
     private String password;
 
-    @Column(name = "dni", nullable = false)
-    @Size(min = 8, max = 8)
-    private String dni;
-
     @Transient
     private String rolePrefix = "ROLE_";
 

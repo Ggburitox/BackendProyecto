@@ -28,10 +28,6 @@ public class NewDriverRequestDto {
     @NotNull
     private String password;
 
-    @Size(min = 8, max = 8)
-    @NotNull
-    private String dni;
-
     @NotNull
     private Bus bus;
 }

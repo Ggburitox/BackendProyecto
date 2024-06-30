@@ -98,7 +98,6 @@ public class DriverService {
         driverToUpdate.setFirstName(driver.getFirstName());
         driverToUpdate.setLastName(driver.getLastName());
         driverToUpdate.setEmail(driver.getEmail());
-        driverToUpdate.setDni(driver.getDni());
         driverRepository.save(driverToUpdate);
         String message = "Sus datos han sido actualizados!";
         applicationEventPublisher.publishEvent(new HelloEmailEvent(driver.getEmail(), message));

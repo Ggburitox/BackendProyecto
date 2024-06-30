@@ -21,9 +21,5 @@ public class PassengerDto {
     private String email;
 
     @NotNull
-    @Size(min = 8, max = 8)
-    private String dni;
-
-    @NotNull
     private Station station;
 }
