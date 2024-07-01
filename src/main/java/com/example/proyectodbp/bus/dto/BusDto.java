@@ -1,5 +1,6 @@
 package com.example.proyectodbp.bus.dto;
 
+import com.example.proyectodbp.driver.domain.Driver;
 import com.example.proyectodbp.route.domain.Route;
 import com.example.proyectodbp.station.domain.Station;
 import lombok.Data;
@@ -12,6 +13,9 @@ public class BusDto {
     @Size(min = 6, max = 6)
     @NotNull
     private String plate;
+
+    @NotNull
+    private Driver driver;
 
     @NotNull
     private Route route;

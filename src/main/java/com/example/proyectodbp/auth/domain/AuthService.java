@@ -12,8 +12,6 @@ import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
 import com.example.proyectodbp.user.domain.Role;
 import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,19 +22,17 @@ public class AuthService {
     private final UserRepository<User> userRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
     private final DriverRepository driverRepository;
     private final PassengerRepository passengerRepository;
 
-    @Autowired
-    public AuthService(UserRepository<User> userRepository, JwtService jwtService, PasswordEncoder  passwordEncoder, DriverRepository driverRepository, PassengerRepository passengerRepository){
+    public AuthService(UserRepository<User> userRepository, JwtService jwtService, PasswordEncoder passwordEncoder, DriverRepository driverRepository, PassengerRepository passengerRepository) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
-        this.modelMapper = new ModelMapper();
         this.driverRepository = driverRepository;
         this.passengerRepository = passengerRepository;
     }
+
     public JwtAuthResponse login(LoginRequest request){
         Optional<User> user = userRepository.findByEmail(request.getEmail());
 
@@ -57,12 +53,11 @@ public class AuthService {
 
         if(request.getIsDriver()){
             Driver driver = new Driver();
-            driver.setRole(Role.DRIVER);
-            driver.setFirstName(request.getName());
+            driver.setFirstName(request.getFirstName());
             driver.setLastName(request.getLastName());
             driver.setEmail(request.getEmail());
             driver.setPassword(passwordEncoder.encode(request.getPassword()));
-
+            driver.setRole(Role.DRIVER);
             driverRepository.save(driver);
 
             JwtAuthResponse response = new JwtAuthResponse();
@@ -72,18 +67,16 @@ public class AuthService {
         }
         else{
             Passenger passenger = new Passenger();
-            passenger.setRole(Role.PASSENGER);
-            passenger.setFirstName(request.getName());
+            passenger.setFirstName(request.getFirstName());
             passenger.setLastName(request.getLastName());
             passenger.setEmail(request.getEmail());
             passenger.setPassword(passwordEncoder.encode(request.getPassword()));
-
+            passenger.setRole(Role.PASSENGER);
             passengerRepository.save(passenger);
 
             JwtAuthResponse response = new JwtAuthResponse();
             response.setToken(jwtService.generateToken(passenger));
             return response;
-
         }
     }
 }
