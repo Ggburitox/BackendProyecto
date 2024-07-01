@@ -1,5 +1,7 @@
 package com.example.proyectodbp.station.dto;
 
+import com.example.proyectodbp.bus.domain.Bus;
+import com.example.proyectodbp.passenger.domain.Passenger;
 import com.example.proyectodbp.route.domain.Route;
 import lombok.Data;
 import javax.validation.constraints.NotEmpty;
@@ -15,4 +17,10 @@ public class StationDto {
 
     @NotEmpty
     private List<Route> routes;
+
+    @NotEmpty
+    private List<Bus> buses;
+
+    @NotEmpty
+    private List<Passenger> passengers;
 }

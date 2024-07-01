@@ -39,18 +39,6 @@ public class BusService {
     }
   
     public String createBus(NewBusRequestDto busDto) {
-         // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
-        String username = authorizationUtils.getCurrentUserEmail();
-        if(username == null) {
-            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
-        }
-
-        // Verifica que el usuario actual sea un DRIVER
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if(user.getRole() != Role.DRIVER) {
-            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
-        }
         if (busRepository.findByPlate(busDto.getPlate()).isPresent()) {
             throw new ResourceNotFoundException("This bus already exists");
         }

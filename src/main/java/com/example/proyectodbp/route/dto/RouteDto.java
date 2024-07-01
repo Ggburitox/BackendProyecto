@@ -1,5 +1,6 @@
 package com.example.proyectodbp.route.dto;
 
+import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.station.domain.Station;
 import lombok.Data;
 
@@ -13,6 +14,9 @@ public class RouteDto {
     @NotNull
     @Size(min = 1, max = 50)
     private String name;
+
+    @NotEmpty
+    private List<Bus> buses;
 
     @NotEmpty
     private List<Station> stations;

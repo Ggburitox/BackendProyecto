@@ -12,7 +12,6 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 public class Passenger extends User {
-
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Station station;
 }

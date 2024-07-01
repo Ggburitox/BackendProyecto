@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
         property = "id")
 public class Bus {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

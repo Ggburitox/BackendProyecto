@@ -8,14 +8,12 @@ import com.example.proyectodbp.user.domain.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import javax.security.sasl.AuthenticationException;
 import java.util.Date;
 
@@ -29,8 +27,11 @@ public class JwtService {
     @Getter @Setter
     private String secret;
 
-    @Autowired
     private UserService userService;
+
+    public JwtService(UserService userService) {
+        this.userService = userService;
+    }
 
     public String extractUsername(String token) throws JWTDecodeException {
         return JWT.decode(token).getSubject();

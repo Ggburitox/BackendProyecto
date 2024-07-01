@@ -5,8 +5,6 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,19 +21,15 @@ public class User implements UserDetails {
     private Role role;
 
     @Column(name = "first_name", nullable = false)
-    @Size(min = 2, max = 50)
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
-    @Size(min = 2, max = 50)
     private String lastName;
 
     @Column(name = "email", nullable = false)
-    @Email
     private String email;
 
     @Column(name = "password", nullable = false)
-    @Size(min = 5, max = 20)
     private String password;
 
     @Transient
@@ -70,5 +64,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }

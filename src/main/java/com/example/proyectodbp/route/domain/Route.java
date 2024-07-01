@@ -17,6 +17,7 @@ import java.util.List;
         property = "id")
 public class Route {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

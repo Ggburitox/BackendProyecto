@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 public class AuthorizationUtils {
     private final UserService userService;
 
-    @Autowired
     public AuthorizationUtils(UserService userService) {
         this.userService = userService;
     }
@@ -23,7 +22,7 @@ public class AuthorizationUtils {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
         String role = userDetails.getAuthorities().toArray()[0].toString();
-        User passenger= userService.findByEmail(username, role);
+        User passenger = userService.findByEmail(username, role);
 
         return passenger.getId().equals(id) || passenger.getRole().equals(Role.DRIVER);
     }
@@ -38,5 +37,4 @@ public class AuthorizationUtils {
             return null;
         }
     }
-
 }

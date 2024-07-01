@@ -24,7 +24,7 @@ public class UserService {
 
     public User findByEmail(String username, String role) {
         User user;
-        if (role.equals("ROLE_DRIVE"))
+        if (role.equals("ROLE_DRIVER"))
             user = driverRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         else
             user = passengerRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -32,7 +32,6 @@ public class UserService {
         return user;
     }
 
-    @Bean(name = "UserDetailsService")
     public UserDetailsService userDetailsService() {
         return username -> {
             User user = userRepository

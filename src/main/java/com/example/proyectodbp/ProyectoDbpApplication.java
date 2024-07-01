@@ -16,5 +16,4 @@ public class ProyectoDbpApplication {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
 }

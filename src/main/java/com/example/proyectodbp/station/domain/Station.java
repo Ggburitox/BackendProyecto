@@ -7,20 +7,19 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import javax.validation.constraints.Size;
+import lombok.NoArgsConstructor;
 import java.util.List;
-
 
 @Entity
 @Data
+@NoArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Station {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    @Size(min = 2, max = 50)
     private String name;
 
     @ManyToMany(mappedBy = "stations")
