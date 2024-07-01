@@ -24,11 +24,26 @@ public class Bus {
     private String plate;
 
     @OneToOne
+    @JoinTable(
+            name = "bus_driver",
+            joinColumns = @JoinColumn(name = "bus_id"),
+            inverseJoinColumns = @JoinColumn(name = "driver_id")
+    )
     private Driver driver;
 
     @ManyToOne
+    @JoinTable(
+            name = "bus_route",
+            joinColumns = @JoinColumn(name = "bus_id"),
+            inverseJoinColumns = @JoinColumn(name = "route_id")
+    )
     private Route route;
 
     @ManyToOne
+    @JoinTable(
+            name = "bus_station",
+            joinColumns = @JoinColumn(name = "bus_id"),
+            inverseJoinColumns = @JoinColumn(name = "station_id")
+    )
     private Station station;
 }

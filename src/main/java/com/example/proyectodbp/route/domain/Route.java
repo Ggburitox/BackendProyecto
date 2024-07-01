@@ -28,5 +28,10 @@ public class Route {
     private List<Bus> buses;
 
     @ManyToMany
+    @JoinTable(
+            name = "route_station",
+            joinColumns = @JoinColumn(name = "route_id"),
+            inverseJoinColumns = @JoinColumn(name = "station_id")
+    )
     private List<Station> stations;
 }
