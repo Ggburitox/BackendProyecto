@@ -1,5 +1,5 @@
 package com.example.proyectodbp.user.domain;
 
 public enum Role {
-    DRIVER, PASSENGER
+    DRIVER, PASSENGER, ADMIN
 }

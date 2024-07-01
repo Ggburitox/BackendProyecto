@@ -1,12 +1,10 @@
 package com.example.proyectodbp.driver.application;
 
 import com.example.proyectodbp.driver.domain.DriverService;
-import com.example.proyectodbp.driver.dto.DriverDto;
-import com.example.proyectodbp.driver.dto.NewDriverRequestDto;
+import com.example.proyectodbp.driver.dto.DriverResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/driver")
@@ -20,13 +18,8 @@ public class DriverController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DriverDto> getDriver(@PathVariable Long id) {
+    public ResponseEntity<DriverResponseDto> getDriver(@PathVariable Long id) {
         return ResponseEntity.ok(driverService.getDriverInfo(id));
-    }
-
-    @PostMapping()
-    public ResponseEntity<Void> createDriver(@RequestBody NewDriverRequestDto driver) {
-        return ResponseEntity.created(URI.create(driverService.createDriver(driver))).build();
     }
 
     @DeleteMapping("/{id}")
@@ -36,8 +29,8 @@ public class DriverController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> putDriver(@PathVariable Long id, @RequestBody DriverDto driver) {
-        driverService.updateDriver(id, driver);
+    public ResponseEntity<Void> putDriver(@PathVariable Long id, @RequestBody DriverResponseDto driver) {
+        driverService.updateDriverInfo(id, driver);
         return ResponseEntity.ok().build();
     }
 

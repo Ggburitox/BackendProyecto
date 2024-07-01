@@ -2,14 +2,11 @@ package com.example.proyectodbp.driver.domain;
 
 import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
-import com.example.proyectodbp.driver.dto.DriverDto;
-import com.example.proyectodbp.driver.dto.NewDriverRequestDto;
+import com.example.proyectodbp.driver.dto.DriverResponseDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
 import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
-import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
-import com.example.proyectodbp.user.domain.Role;
 import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
 import com.example.proyectodbp.utils.AuthorizationUtils;
@@ -38,9 +35,7 @@ public class DriverService {
         this.modelMapper = new ModelMapper();
     }
 
-
-    public DriverDto getDriverInfo(Long id) {
-        // Check if the current user is an admin or the owner of the resource
+    public DriverResponseDto getDriverInfo(Long id) {
         String username = authorizationUtils.getCurrentUserEmail();
         if(username == null) {
             throw new UnauthorizedOperationException("Anonymous User not allowed to access");
@@ -56,73 +51,36 @@ public class DriverService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
 
-        return modelMapper.map(driver, DriverDto.class);
-    }
-
-    public String createDriver(NewDriverRequestDto requestDto) {
-        // Aquí obtienes el identificador del usuario actual (correo electrónico) utilizando Spring Security
-        String username = authorizationUtils.getCurrentUserEmail();
-        if(username == null) {
-            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
-        }
-
-        // Verifica que el usuario actual sea un DRIVER
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if(user.getRole() != Role.DRIVER) {
-            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
-        }
-
-        if (driverRepository.findByEmail(requestDto.getEmail()).isPresent()) {
-            throw new UniqueResourceAlreadyExist("This driver already exists");
-        }
-        Driver newDriver = modelMapper.map(requestDto, Driver.class);
-        driverRepository.save(newDriver);
-        return "/requestDto/" + newDriver.getId();
+        return modelMapper.map(driver, DriverResponseDto.class);
     }
 
     public void deleteDriver(Long id) {
+        if (!authorizationUtils.isAdminOrResourceOwner(id))
+            throw new UnauthorizedOperationException("User has no permission to modify this resource");
+
         driverRepository.deleteById(id);
     }
 
-    public void updateDriver(Long id, DriverDto driver) {
-        // Check if the current user is an admin or the owner of the resource
-        String username = authorizationUtils.getCurrentUserEmail();
-        if(username == null) {
-            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
-        }
+    public void updateDriverInfo(Long id, DriverResponseDto driverInfo) {
+        if (!authorizationUtils.isAdminOrResourceOwner(id))
+            throw new UnauthorizedOperationException("User has no permission to modify this resource");
 
-        // Verifica que el usuario actual sea un DRIVER
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if(user.getRole() != Role.DRIVER) {
-            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
-        }
-
-        Driver driverToUpdate = driverRepository
+        Driver driver = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
-        driverToUpdate.setFirstName(driver.getFirstName());
-        driverToUpdate.setLastName(driver.getLastName());
-        driverToUpdate.setEmail(driver.getEmail());
-        driverRepository.save(driverToUpdate);
-        String message = "Sus datos han sido actualizados!";
-        applicationEventPublisher.publishEvent(new HelloEmailEvent(driver.getEmail(), message));
+                .orElseThrow(() -> new ResourceNotFoundException("Driver not found"));
+
+        driver.setFirstName(driverInfo.getFirstName());
+        driver.setLastName(driverInfo.getLastName());
+        driver.setEmail(driverInfo.getEmail());
+        driverRepository.save(driver);
+
+        String message = "Sus datos han sido actualizados";
+        applicationEventPublisher.publishEvent(new HelloEmailEvent(driverInfo.getEmail(), message));
     }
 
     public void updateDriverBus(Long id, String busPlate) {
-        // Check if the current user is an admin or the owner of the resource
-        String username = authorizationUtils.getCurrentUserEmail();
-        if(username == null) {
-            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
-        }
-
-        // Verifica que el usuario actual sea un DRIVER
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if(user.getRole() != Role.DRIVER) {
-            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
-        }
+        if (!authorizationUtils.isAdminOrResourceOwner(id))
+            throw new UnauthorizedOperationException("User has no permission to modify this resource");
 
         Driver driver = driverRepository
                 .findById(id)

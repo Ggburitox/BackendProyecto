@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class DriverDto {
+public class DriverResponseDto {
     @Size(min = 2, max = 50)
     @NotNull
     private String firstName;

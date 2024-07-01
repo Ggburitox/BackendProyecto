@@ -8,7 +8,9 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Driver extends User {
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
 }
