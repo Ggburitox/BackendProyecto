@@ -9,7 +9,7 @@ import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
-import com.example.proyectodbp.utils.AuthorizationUtils;
+import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

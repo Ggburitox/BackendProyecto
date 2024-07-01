@@ -12,7 +12,7 @@ import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import com.example.proyectodbp.utils.AuthorizationUtils;
+import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 
 @Service
 public class BusService {

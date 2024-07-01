@@ -7,45 +7,32 @@ import com.example.proyectodbp.driver.infraestructure.DriverRepository;
 import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
-import com.example.proyectodbp.user.domain.User;
-import com.example.proyectodbp.user.infraestructure.UserRepository;
-import com.example.proyectodbp.utils.AuthorizationUtils;
+import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DriverService {
     private final DriverRepository driverRepository;
     private final BusRepository busRepository;
-    private final UserRepository<User> userRepository;
     private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public DriverService(DriverRepository driverRepository, BusRepository busRepository, UserRepository<User> userRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher) {
+    public DriverService(DriverRepository driverRepository, BusRepository busRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher) {
         this.driverRepository = driverRepository;
         this.busRepository = busRepository;
-        this.userRepository = userRepository;
         this.authorizationUtils = authorizationUtils;
         this.applicationEventPublisher = applicationEventPublisher;
         this.modelMapper = new ModelMapper();
     }
 
     public DriverResponseDto getDriverInfo(Long id) {
-        String username = authorizationUtils.getCurrentUserEmail();
-        if(username == null) {
-            throw new UnauthorizedOperationException("Anonymous User not allowed to access");
-        }
-
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if(!authorizationUtils.isAdminOrResourceOwner(user.getId())) {
-            throw new UnauthorizedOperationException("No estas autorizado para acceder a este recurso");
-        }
+        if (!authorizationUtils.isAdminOrResourceOwner(id))
+            throw new UnauthorizedOperationException("User has no permission to modify this resource");
 
         Driver driver = driverRepository
                 .findById(id)
