@@ -3,7 +3,7 @@ package com.example.proyectodbp.driver.domain;
 import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
-import com.example.proyectodbp.driver.dto.DriverResponseDto;
+import com.example.proyectodbp.driver.dto.DriverDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
 import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
@@ -32,7 +32,7 @@ public class DriverService {
         this.modelMapper = new ModelMapper();
     }
 
-    public DriverResponseDto getDriverInfo(Long id) {
+    public DriverDto getDriverInfo(Long id) {
         if (!authorizationUtils.isAdminOrResourceOwner(id))
             throw new UnauthorizedOperationException("User has no permission to modify this resource");
 
@@ -40,10 +40,10 @@ public class DriverService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
 
-        return modelMapper.map(driver, DriverResponseDto.class);
+        return modelMapper.map(driver, DriverDto.class);
     }
 
-    public DriverResponseDto getDriverOwnInfo() {
+    public DriverDto getDriverOwnInfo() {
         String email = authorizationUtils.getCurrentUserEmail();
         if (email==null) {
             throw new UnauthorizedOperationException("Anonymus user not allowed to access this resource");
@@ -61,7 +61,7 @@ public class DriverService {
         driverRepository.deleteById(id);
     }
 
-    public void updateDriverInfo(Long id, DriverResponseDto driverInfo) {
+    public void updateDriverInfo(Long id, DriverDto driverInfo) {
         if (!authorizationUtils.isAdminOrResourceOwner(id))
             throw new UnauthorizedOperationException("User has no permission to modify this resource");
 

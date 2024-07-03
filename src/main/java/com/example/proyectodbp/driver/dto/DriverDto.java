@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class DriverResponseDto {
+public class DriverDto {
     @NotNull
     private Long id;
 
@@ -23,6 +23,5 @@ public class DriverResponseDto {
     @NotNull
     private String email;
 
-    @NotNull
     private BusDto bus;
 }

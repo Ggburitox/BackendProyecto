@@ -2,7 +2,7 @@ package com.example.proyectodbp.driver.application;
 
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.driver.domain.DriverService;
-import com.example.proyectodbp.driver.dto.DriverResponseDto;
+import com.example.proyectodbp.driver.dto.DriverDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +19,12 @@ public class DriverController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DriverResponseDto> getDriver(@PathVariable Long id) {
+    public ResponseEntity<DriverDto> getDriver(@PathVariable Long id) {
         return ResponseEntity.ok(driverService.getDriverInfo(id));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<DriverResponseDto> getDriver() {
+    public ResponseEntity<DriverDto> getDriver() {
         return ResponseEntity.ok(driverService.getDriverOwnInfo());
     }
 
@@ -35,7 +35,7 @@ public class DriverController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> putDriver(@PathVariable Long id, @RequestBody DriverResponseDto driver) {
+    public ResponseEntity<Void> putDriver(@PathVariable Long id, @RequestBody DriverDto driver) {
         driverService.updateDriverInfo(id, driver);
         return ResponseEntity.ok().build();
     }

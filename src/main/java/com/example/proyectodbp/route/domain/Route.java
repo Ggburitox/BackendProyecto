@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
-
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -36,5 +35,13 @@ public class Route {
 
     public void addBus(Bus bus) {
         buses.add(bus);
+    }
+
+    public void removeStation(Station station) {
+        stations.remove(station);
+    }
+
+    public void removeBus(Bus bus) {
+        buses.remove(bus);
     }
 }

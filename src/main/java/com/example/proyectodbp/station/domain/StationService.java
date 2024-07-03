@@ -68,7 +68,6 @@ public class StationService {
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
 
         stationToUpdate.setName(stationDto.getName());
-        stationToUpdate.setRoutes(stationDto.getRoutes());
         stationRepository.save(stationToUpdate);
         String message = "Station updated";
         applicationEventPublisher.publishEvent(new HelloEmailEvent(authorizationUtils.getCurrentUserEmail(), message));

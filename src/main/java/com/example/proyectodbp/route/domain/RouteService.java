@@ -8,11 +8,15 @@ import com.example.proyectodbp.route.dto.NewRouteRequestDto;
 import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.domain.Station;
+import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
 import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RouteService{
@@ -65,8 +69,15 @@ public class RouteService{
         Route route = routeRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
+
+        List<Station> stations = stationRepository
+                .findByNameIn(routeDto.getStations()
+                .stream()
+                .map(StationDto::getName)
+                .collect(Collectors.toList()));
+
         route.setName(routeDto.getName());
-        route.setStations(routeDto.getStations());
+        route.setStations(stations);
         routeRepository.save(route);
     }
 
