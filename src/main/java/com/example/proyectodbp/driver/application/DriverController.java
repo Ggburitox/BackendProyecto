@@ -1,5 +1,6 @@
 package com.example.proyectodbp.driver.application;
 
+import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.driver.domain.DriverService;
 import com.example.proyectodbp.driver.dto.DriverResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,11 @@ public class DriverController {
         return ResponseEntity.ok(driverService.getDriverInfo(id));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<DriverResponseDto> getDriver() {
+        return ResponseEntity.ok(driverService.getDriverOwnInfo());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDriver(@PathVariable Long id) {
         driverService.deleteDriver(id);
@@ -35,8 +41,8 @@ public class DriverController {
     }
 
     @PatchMapping("/{id}/bus")
-    public ResponseEntity<Void> patchDriverBus(@PathVariable Long id,@RequestBody String busPlate){
-        driverService.updateDriverBus(id, busPlate);
+    public ResponseEntity<Void> patchDriverBus(@PathVariable Long id,@RequestBody NewBusRequestDto busDto){
+        driverService.updateDriverBus(id, busDto);
         return ResponseEntity.ok().build();
     }
 }

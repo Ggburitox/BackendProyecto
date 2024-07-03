@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 @Data
 public class NewBusRequestDto {
-    @Size(min = 6, max = 6)
+    @Size(min = 7, max = 7)
     @NotNull
     private String plate;
 }

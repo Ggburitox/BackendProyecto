@@ -10,16 +10,13 @@ import javax.validation.constraints.Size;
 
 @Data
 public class BusDto {
-    @Size(min = 6, max = 6)
+    @Size(min = 7, max = 7)
     @NotNull
     private String plate;
 
-    @NotNull
     private Driver driver;
 
-    @NotNull
     private Route route;
 
-    @NotNull
     private Station station;
 }

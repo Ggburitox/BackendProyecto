@@ -84,11 +84,11 @@ public class StationService {
         Route route = routeRepository
                 .findByName(routeName)
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
-        station.getRoutes().add(route);
-        route.getStations().add(station);
+        station.addRoute(route);
+        route.addStation(station);
         stationRepository.save(station);
         routeRepository.save(route);
-        String message = "Route added to station";
-        applicationEventPublisher.publishEvent(new HelloEmailEvent(authorizationUtils.getCurrentUserEmail(), message));
+//        String message = "Route added to station";
+//        applicationEventPublisher.publishEvent(new HelloEmailEvent(authorizationUtils.getCurrentUserEmail(), message));
     }
 }

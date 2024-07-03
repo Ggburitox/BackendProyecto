@@ -1,6 +1,7 @@
 package com.example.proyectodbp.driver.domain;
 
 import com.example.proyectodbp.bus.domain.Bus;
+import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.driver.dto.DriverResponseDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
@@ -11,6 +12,7 @@ import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,6 +43,17 @@ public class DriverService {
         return modelMapper.map(driver, DriverResponseDto.class);
     }
 
+    public DriverResponseDto getDriverOwnInfo() {
+        String email = authorizationUtils.getCurrentUserEmail();
+        if (email==null) {
+            throw new UnauthorizedOperationException("Anonymus user not allowed to access this resource");
+        }
+        Driver driver = driverRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Driver not found"));
+        return getDriverInfo(driver.getId());
+    }
+
     public void deleteDriver(Long id) {
         if (!authorizationUtils.isAdminOrResourceOwner(id))
             throw new UnauthorizedOperationException("User has no permission to modify this resource");
@@ -65,22 +78,30 @@ public class DriverService {
         applicationEventPublisher.publishEvent(new HelloEmailEvent(driverInfo.getEmail(), message));
     }
 
-    public void updateDriverBus(Long id, String busPlate) {
+    public void updateDriverBus(Long id, NewBusRequestDto busDto) {
         if (!authorizationUtils.isAdminOrResourceOwner(id))
             throw new UnauthorizedOperationException("User has no permission to modify this resource");
 
         Driver driver = driverRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
-        Bus bus = busRepository
-                .findByPlate(busPlate)
+                .orElseThrow(() -> new UsernameNotFoundException("This driver does not exist"));
+
+        Bus oldBus = busRepository
+                .findById(driver.getBus().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("This driver does not have a bus"));
+
+        oldBus.setDriver(null);
+        busRepository.save(oldBus);
+
+        Bus newBus = busRepository
+                .findByPlate(busDto.getPlate())
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
 
-        bus.setDriver(driver);
-        driver.setBus(bus);
-        busRepository.save(bus);
+        driver.setBus(newBus);
+        newBus.setDriver(driver);
         driverRepository.save(driver);
-        String message = "Su bus ha sido actualizado!";
-        applicationEventPublisher.publishEvent(new HelloEmailEvent(driver.getEmail(), message));
+        busRepository.save(newBus);
+//        String message = "Su bus ha sido actualizado!";
+//        applicationEventPublisher.publishEvent(new HelloEmailEvent(driver.getEmail(), message));
     }
 }

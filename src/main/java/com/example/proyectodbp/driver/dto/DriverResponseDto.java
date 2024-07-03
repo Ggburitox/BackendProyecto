@@ -8,6 +8,9 @@ import javax.validation.constraints.Size;
 
 @Data
 public class DriverResponseDto {
+    @NotNull
+    private Long id;
+
     @Size(min = 2, max = 50)
     @NotNull
     private String firstName;

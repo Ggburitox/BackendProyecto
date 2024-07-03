@@ -10,6 +10,7 @@ import com.example.proyectodbp.station.infraestructure.StationRepository;
 import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,15 +18,14 @@ public class PassengerService {
     private final PassengerRepository passengerRepository;
     private final StationRepository stationRepository;
     private final AuthorizationUtils authorizationUtils;
-    private final ModelMapper modelMapper;
+    private final ModelMapper modelMapper = new ModelMapper();
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository, AuthorizationUtils authorizationUtils, ModelMapper modelMapper, ApplicationEventPublisher applicationEventPublisher) {
+    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher) {
         this.passengerRepository = passengerRepository;
         this.stationRepository = stationRepository;
         this.authorizationUtils = authorizationUtils;
         this.applicationEventPublisher = applicationEventPublisher;
-        this.modelMapper = modelMapper;
     }
 
     public PassengerDto getPassengerInfo(Long id) {
@@ -34,9 +34,20 @@ public class PassengerService {
 
         Passenger passenger = passengerRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("The passenger does not exist"));
+                .orElseThrow(() -> new UsernameNotFoundException("The passenger does not exist"));
 
         return modelMapper.map(passenger, PassengerDto.class);
+    }
+
+    public PassengerDto getPassengerOwnInfo() {
+        String email = authorizationUtils.getCurrentUserEmail();
+        if (email==null) {
+            throw new UnauthorizedOperationException("Anonymus user not allowed to access this resource");
+        }
+        Passenger passenger = passengerRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Passenger not found"));
+        return getPassengerInfo(passenger.getId());
     }
 
     public void deletePassenger(Long id) {
@@ -65,16 +76,24 @@ public class PassengerService {
   
         Passenger passenger = passengerRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("The passenger does not exist"));
-        Station station = stationRepository
+                .orElseThrow(() -> new UsernameNotFoundException("The passenger does not exist"));
+
+        Station oldStation = stationRepository
+                .findByName(passenger.getStation().getName())
+                .orElseThrow(() -> new ResourceNotFoundException("The station does not exist"));
+
+        oldStation.removePassenger(passenger);
+        stationRepository.save(oldStation);
+
+        Station newStation = stationRepository
                 .findByName(stationName)
                 .orElseThrow(() -> new ResourceNotFoundException("The station does not exist"));
 
-        passenger.setStation(station);
-        station.getPassengers().add(passenger);
+        passenger.setStation(newStation);
+        newStation.addPassenger(passenger);
         passengerRepository.save(passenger);
-        stationRepository.save(station);
-        String message = "The passenger station has been updated to " + stationName;
-        applicationEventPublisher.publishEvent(new HelloEmailEvent(passenger.getEmail(), message));
+        stationRepository.save(newStation);
+//        String message = "The passenger station has been updated to " + stationName;
+//        applicationEventPublisher.publishEvent(new HelloEmailEvent(passenger.getEmail(), message));
     }
 }

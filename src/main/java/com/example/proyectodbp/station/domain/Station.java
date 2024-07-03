@@ -30,4 +30,16 @@ public class Station {
 
     @OneToMany(mappedBy = "station")
     private List<Passenger> passengers;
+
+    public void addPassenger(Passenger passenger) {
+        passengers.add(passenger);
+    }
+
+    public void removePassenger(Passenger passenger) {
+        passengers.remove(passenger);
+    }
+
+    public void addRoute(Route route) {
+        routes.add(route);
+    }
 }

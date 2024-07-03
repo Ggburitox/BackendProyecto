@@ -11,6 +11,5 @@ import lombok.*;
 @NoArgsConstructor
 public class Driver extends User {
     @OneToOne(mappedBy = "driver",cascade = CascadeType.ALL)
-    @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
 }

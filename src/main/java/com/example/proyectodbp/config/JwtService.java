@@ -5,9 +5,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.proyectodbp.user.domain.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -24,11 +23,11 @@ public class JwtService {
     private static final String ROLE_CLAIM = "role";
 
     @Value("${jwt.secret}")
-    @Getter @Setter
     private String secret;
 
     private UserService userService;
 
+    @Autowired
     public JwtService(UserService userService) {
         this.userService = userService;
     }

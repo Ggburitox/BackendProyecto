@@ -4,7 +4,6 @@ import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.passenger.domain.Passenger;
 import com.example.proyectodbp.route.domain.Route;
 import lombok.Data;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -15,12 +14,9 @@ public class StationDto {
     @Size(min = 2, max = 50)
     private String name;
 
-    @NotEmpty
     private List<Route> routes;
 
-    @NotEmpty
     private List<Bus> buses;
 
-    @NotEmpty
     private List<Passenger> passengers;
 }

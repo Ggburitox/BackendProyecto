@@ -3,7 +3,6 @@ package com.example.proyectodbp.bus.application;
 import com.example.proyectodbp.bus.domain.BusService;
 import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
@@ -13,7 +12,6 @@ import java.net.URI;
 public class BusController {
     private final BusService busService;
 
-    @Autowired
     public BusController(BusService busService) {
         this.busService = busService;
     }

@@ -15,6 +15,7 @@ import com.example.proyectodbp.user.infraestructure.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Service
@@ -58,6 +59,7 @@ public class AuthService {
             driver.setEmail(request.getEmail());
             driver.setPassword(passwordEncoder.encode(request.getPassword()));
             driver.setRole(Role.DRIVER);
+            driver.setCreatedAt(ZonedDateTime.now());
             driverRepository.save(driver);
 
             JwtAuthResponse response = new JwtAuthResponse();
@@ -72,6 +74,7 @@ public class AuthService {
             passenger.setEmail(request.getEmail());
             passenger.setPassword(passwordEncoder.encode(request.getPassword()));
             passenger.setRole(Role.PASSENGER);
+            passenger.setCreatedAt(ZonedDateTime.now());
             passengerRepository.save(passenger);
 
             JwtAuthResponse response = new JwtAuthResponse();

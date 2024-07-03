@@ -20,7 +20,6 @@ public class RouteService{
     private final StationRepository stationRepository;
     private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper = new ModelMapper();
-
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public RouteService(RouteRepository routeRepository, StationRepository stationRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher) {
@@ -63,12 +62,12 @@ public class RouteService{
         if (!authorizationUtils.isAdminOrResourceOwner(id))
             throw new UnauthorizedOperationException("User has no permission to modify this resource");
 
-        Route routeToUpdate = routeRepository
+        Route route = routeRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
-        routeToUpdate.setName(routeDto.getName());
-        routeToUpdate.setStations(routeDto.getStations());
-        routeRepository.save(routeToUpdate);
+        route.setName(routeDto.getName());
+        route.setStations(routeDto.getStations());
+        routeRepository.save(route);
     }
 
     public void addStation(Long id, String stationName) {
@@ -81,8 +80,8 @@ public class RouteService{
         Station station = stationRepository
                 .findByName(stationName)
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
-        route.getStations().add(station);
-        station.getRoutes().add(route);
+        route.addStation(station);
+        station.addRoute(route);
         routeRepository.save(route);
         stationRepository.save(station);
         String message = "Station added successfully";

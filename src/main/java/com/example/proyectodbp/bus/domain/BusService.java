@@ -30,11 +30,15 @@ public class BusService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
   
-    public String createBus(NewBusRequestDto busDto) {
-        if (busRepository.findByPlate(busDto.getPlate()).isPresent()) {
+    public String createBus(NewBusRequestDto busRequest) {
+        if (!authorizationUtils.isAdmin())
+            throw new UnauthorizedOperationException("User has no permission to create a bus");
+
+        if (busRepository.findByPlate(busRequest.getPlate()).isPresent())
             throw new UniqueResourceAlreadyExist("This bus already exists");
-        }
-        Bus newBus = modelMapper.map(busDto, Bus.class);
+
+        Bus newBus = modelMapper.map(busRequest, Bus.class);
+        busRepository.save(newBus);
         return "/driver/"+newBus.getId();
     }
 
@@ -44,7 +48,7 @@ public class BusService {
 
         Bus bus = busRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Este bus no existe"));
+                .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
 
         return modelMapper.map(bus, BusDto.class);
     }

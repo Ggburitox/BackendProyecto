@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 @Data
 public class NewRouteRequestDto {
+    @Size(min = 5, max = 50)
     @NotNull
-    @Size(min = 1, max = 50)
     private String name;
 }

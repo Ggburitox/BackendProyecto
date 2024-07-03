@@ -26,6 +26,15 @@ public class AuthorizationUtils {
         return passenger.getId().equals(id) || passenger.getRole().equals(Role.DRIVER);
     }
 
+    public boolean isAdmin(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        String role = userDetails.getAuthorities().toArray()[0].toString();
+        User passenger = userService.findByEmail(username, role);
+        return passenger.getRole().equals(Role.DRIVER);
+    }
+
     public String getCurrentUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
