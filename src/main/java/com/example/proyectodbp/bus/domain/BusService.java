@@ -20,7 +20,6 @@ public class BusService {
     private final RouteRepository routeRepository;
     private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper = new ModelMapper();
-
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public BusService(BusRepository busRepository, RouteRepository routeRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher) {
@@ -87,10 +86,10 @@ public class BusService {
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
 
         bus.setRoute(route);
-        route.getBuses().add(bus);
+        route.addBus(bus);
         busRepository.save(bus);
         routeRepository.save(route);
-        String message = "Usted ha actualizado la ruta de su bus!";
-        applicationEventPublisher.publishEvent(new HelloEmailEvent(bus.getDriver().getEmail(), message));
+//        String message = "Usted ha actualizado la ruta de su bus!";
+//        applicationEventPublisher.publishEvent(new HelloEmailEvent(bus.getDriver().getEmail(), message));
     }
 }

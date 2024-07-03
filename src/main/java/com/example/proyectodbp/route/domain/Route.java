@@ -33,4 +33,8 @@ public class Route {
     public void addStation(Station station) {
         stations.add(station);
     }
+
+    public void addBus(Bus bus) {
+        buses.add(bus);
+    }
 }
