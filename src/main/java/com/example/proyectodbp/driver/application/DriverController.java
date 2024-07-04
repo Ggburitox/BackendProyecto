@@ -3,7 +3,6 @@ package com.example.proyectodbp.driver.application;
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.driver.domain.DriverService;
 import com.example.proyectodbp.driver.dto.DriverDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +12,6 @@ public class DriverController {
 
     private final DriverService driverService;
 
-    @Autowired
     public DriverController(DriverService driverService) {
         this.driverService = driverService;
     }

@@ -39,7 +39,7 @@ public class RouteController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/stations")
+    @PatchMapping("/{id}/station")
     public ResponseEntity<Void> addStation(@PathVariable Long id, @RequestBody String stationName) {
         routeService.addStation(id, stationName);
         return ResponseEntity.ok().build();
