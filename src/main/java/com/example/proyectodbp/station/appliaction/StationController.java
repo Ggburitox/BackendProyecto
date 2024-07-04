@@ -27,7 +27,7 @@ public class StationController {
         return ResponseEntity.ok(stationService.getStationInfo(id));
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationDto station){
         stationService.updateStation(id, station);
         return ResponseEntity.ok().build();
