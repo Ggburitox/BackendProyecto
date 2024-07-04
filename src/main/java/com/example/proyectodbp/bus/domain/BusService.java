@@ -3,7 +3,6 @@ package com.example.proyectodbp.bus.domain;
 import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
-import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
