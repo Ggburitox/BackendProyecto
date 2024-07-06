@@ -13,6 +13,4 @@ public class BusDto {
     private String plate;
 
     private RouteDto route;
-
-    private StationDto station;
 }

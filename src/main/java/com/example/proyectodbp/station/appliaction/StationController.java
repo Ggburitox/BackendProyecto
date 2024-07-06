@@ -1,7 +1,6 @@
 package com.example.proyectodbp.station.appliaction;
 
 import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
-import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.station.domain.StationService;
 import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
@@ -20,7 +19,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody NewStationRequestDto stationDto){
+    public ResponseEntity<Void> createStation(@RequestBody StationDto stationDto){
         return ResponseEntity.created(URI.create(stationService.createStation(stationDto))).build();
     }
 
@@ -30,7 +29,7 @@ public class StationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationDto station){
+    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody NewStationRequestDto station){
         stationService.updateStation(id, station);
         return ResponseEntity.ok().build();
     }

@@ -35,15 +35,15 @@ public class PassengerController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePassenger(@PathVariable Long id) {
-        passengerService.deletePassenger(id);
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deletePassenger() {
+        passengerService.deletePassenger();
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/station")
-    public ResponseEntity<Void> patchPassengerStation(@PathVariable Long id, @RequestBody NewStationRequestDto stationName) {
-        passengerService.updatePassengerStation(id, stationName);
+    @PatchMapping("/me/station")
+    public ResponseEntity<Void> patchPassengerStation(@RequestBody NewStationRequestDto stationName) {
+        passengerService.updatePassengerStation(stationName);
         return ResponseEntity.ok().build();
     }
 

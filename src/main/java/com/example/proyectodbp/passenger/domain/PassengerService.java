@@ -1,8 +1,6 @@
 package com.example.proyectodbp.passenger.domain;
 
 import com.example.proyectodbp.bus.domain.BusService;
-import com.example.proyectodbp.bus.dto.BusDto;
-import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
@@ -15,8 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PassengerService {
@@ -56,8 +52,17 @@ public class PassengerService {
         return getPassengerInfo(passenger.getId());
     }
 
-    public void deletePassenger(Long id) {
-        passengerRepository.deleteById(id);
+    public void deletePassenger() {
+        String email = authorizationUtils.getCurrentUserEmail();
+        if (email == null) {
+            throw new UnauthorizedOperationException("Anonymous user not allowed to access this resource");
+        }
+
+        Passenger passenger = passengerRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("The passenger does not exist"));
+
+        passengerRepository.deleteById(passenger.getId());
     }
 
     public void updatePassenger(Long id, PassengerDto passengerDto) {
@@ -70,25 +75,21 @@ public class PassengerService {
         passengerRepository.save(passengerToUpdate);
     }
 
-    public void updatePassengerStation(Long id, NewStationRequestDto stationName) {
+    public void updatePassengerStation(NewStationRequestDto stationName) {
+        String email = authorizationUtils.getCurrentUserEmail();
+        if (email==null) {
+            throw new UnauthorizedOperationException("Anonymous user not allowed to access this resource");
+        }
+
         Passenger passenger = passengerRepository
-                .findById(id)
+                .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("The passenger does not exist"));
-
-        Station oldStation = stationRepository
-                .findByName(passenger.getStation().getName())
-                .orElseThrow(() -> new ResourceNotFoundException("The station does not exist"));
-
-        oldStation.removePassenger(passenger);
-        stationRepository.save(oldStation);
 
         Station newStation = stationRepository
                 .findByName(stationName.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("The station does not exist"));
 
         passenger.setStation(newStation);
-        newStation.addPassenger(passenger);
         passengerRepository.save(passenger);
-        stationRepository.save(newStation);
     }
 }

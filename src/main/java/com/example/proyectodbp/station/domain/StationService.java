@@ -1,14 +1,11 @@
 package com.example.proyectodbp.station.domain;
 
-import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.passenger.domain.Passenger;
 import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
-import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
-import com.example.proyectodbp.route.domain.Route;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
@@ -33,9 +30,10 @@ public class StationService {
         this.authorizationUtils = authorizationUtils;
         this.applicationEventPublisher = applicationEventPublisher;
         this.passengerRepository = passengerRepository;
+
     }
 
-    public String createStation(NewStationRequestDto newStation) {
+    public String createStation(StationDto newStation) {
         if (stationRepository.findByName(newStation.getName()).isPresent()) {
             throw new UniqueResourceAlreadyExist("This station already exists");
         }
@@ -53,11 +51,16 @@ public class StationService {
         return modelMapper.map(station, StationDto.class);
     }
 
-    public void deleteStation(Long id) {
-        stationRepository.deleteById(id);
+    public void deleteStation(Long id){
+        Station station = stationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
+        for(Passenger passenger : station.getPassengers()){
+            passenger.setStation(null);
+            passengerRepository.save(passenger);
+        }
+        stationRepository.delete(station);
     }
 
-    public void updateStation(Long id, StationDto stationDto) {
+    public void updateStation(Long id, NewStationRequestDto stationDto) {
 
         Station stationToUpdate = stationRepository
                 .findById(id)
@@ -83,6 +86,9 @@ public class StationService {
             passenger.setStation(station);
             stationRepository.save(station);
             passengerRepository.save(passenger);
+        }
+        else {
+            throw new UnauthorizedOperationException("This passenger is already in the station's passenger list");
         }
     }
 }
