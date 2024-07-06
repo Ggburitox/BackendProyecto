@@ -1,5 +1,7 @@
 package com.example.proyectodbp.station.appliaction;
 
+import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
+import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.station.domain.StationService;
 import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
@@ -39,9 +41,10 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/route")
-    public ResponseEntity<Void> addRoute(@PathVariable Long id, @RequestBody String routeName){
-        stationService.addRoute(id, routeName);
+    @PatchMapping("/{id}/passenger")
+    public ResponseEntity<Void> addPassenger(@PathVariable Long id, @RequestBody NewPassengerRequestDto passengerDto){
+        stationService.addPassenger(id, passengerDto);
         return ResponseEntity.ok().build();
     }
+
 }
