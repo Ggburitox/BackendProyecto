@@ -3,9 +3,11 @@ package com.example.proyectodbp.bus.application;
 import com.example.proyectodbp.bus.domain.BusService;
 import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
+import com.example.proyectodbp.route.dto.NewRouteRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/bus")
@@ -39,8 +41,9 @@ public class BusController {
     }
 
     @PatchMapping("/{id}/route")
-    public ResponseEntity<Void> patchBusRoute(@PathVariable Long id, @RequestBody String routeName){
+    public ResponseEntity<Void> patchBusRoute(@PathVariable Long id, @RequestBody NewRouteRequestDto routeName){
         busService.updateBusRoute(id, routeName);
         return ResponseEntity.ok().build();
     }
+
 }
