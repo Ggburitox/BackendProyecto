@@ -8,6 +8,9 @@ import javax.validation.constraints.Size;
 
 @Data
 public class PassengerDto {
+
+    private Long id;
+
     @NotNull
     @Size(min = 2, max = 50)
     private String firstName;
