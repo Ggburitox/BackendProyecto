@@ -8,6 +8,7 @@ import com.example.proyectodbp.route.dto.NewRouteRequestDto;
 import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.domain.Station;
+import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
 import com.example.proyectodbp.auth.utils.AuthorizationUtils;
@@ -39,15 +40,11 @@ public class RouteService{
         }
 
         Route route = modelMapper.map(routeDto, Route.class);
-        String message = "Route created successfully";
-        applicationEventPublisher.publishEvent(new HelloEmailEvent(authorizationUtils.getCurrentUserEmail(), message));
+        routeRepository.save(route); // Save the route to the database
         return "/routes/" + route.getId();
     }
 
     public RouteDto getRouteInfo(Long id) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
-
         Route route = routeRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
@@ -63,8 +60,6 @@ public class RouteService{
     }
 
     public void updateRoute(Long id, RouteDto routeDto) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
 
         Route route = routeRepository
                 .findById(id)
@@ -81,21 +76,23 @@ public class RouteService{
         routeRepository.save(route);
     }
 
-    public void addStation(Long id, String stationName) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
-  
-        Route route = routeRepository
+    public void addStation(Long id, NewStationRequestDto NewStationRequestDto) {
+        Route newRoute = routeRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
+
         Station station = stationRepository
-                .findByName(stationName)
+                .findByName(NewStationRequestDto.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
-        route.addStation(station);
-        station.addRoute(route);
-        routeRepository.save(route);
-        stationRepository.save(station);
-        String message = "Station added successfully";
-        applicationEventPublisher.publishEvent(new HelloEmailEvent(authorizationUtils.getCurrentUserEmail(), message));
+
+        // Check if the station is already in the new route's station list
+        if (!newRoute.getStations().contains(station)) {
+            // If the station is not in the new route's station list, add it
+            newRoute.addStation(station);
+            station.addRoute(newRoute);
+            routeRepository.save(newRoute);
+            stationRepository.save(station);
+        }
     }
+
 }
