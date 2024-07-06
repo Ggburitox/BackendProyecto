@@ -3,6 +3,7 @@ package com.example.proyectodbp.route.application;
 import com.example.proyectodbp.route.domain.RouteService;
 import com.example.proyectodbp.route.dto.NewRouteRequestDto;
 import com.example.proyectodbp.route.dto.RouteDto;
+import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +39,9 @@ public class RouteController {
         routeService.deleteRoute(id);
         return ResponseEntity.noContent().build();
     }
-
+    
     @PatchMapping("/{id}/station")
-    public ResponseEntity<Void> addStation(@PathVariable Long id, @RequestBody String stationName) {
+    public ResponseEntity<Void> addStation(@PathVariable Long id, @RequestBody NewStationRequestDto stationName) {
         routeService.addStation(id, stationName);
         return ResponseEntity.ok().build();
     }
