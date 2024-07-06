@@ -19,7 +19,7 @@ public class RouteController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createDriver(@RequestBody NewRouteRequestDto routeDto) {
+    public ResponseEntity<Void> createRoute(@RequestBody NewRouteRequestDto routeDto) {
         return ResponseEntity.created(URI.create(routeService.createRoute(routeDto))).build();
     }
 
