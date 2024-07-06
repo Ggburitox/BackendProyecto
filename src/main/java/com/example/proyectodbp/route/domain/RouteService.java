@@ -53,9 +53,6 @@ public class RouteService{
     }
 
     public void deleteRoute(Long id) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
-
         routeRepository.deleteById(id);
     }
 
