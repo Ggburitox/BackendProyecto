@@ -7,6 +7,7 @@ import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.route.domain.Route;
+import com.example.proyectodbp.route.dto.NewRouteRequestDto;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.domain.Station;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
@@ -14,6 +15,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import com.example.proyectodbp.auth.utils.AuthorizationUtils;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BusService {
@@ -33,8 +36,6 @@ public class BusService {
     }
   
     public String createBus(NewBusRequestDto busRequest) {
-        if (!authorizationUtils.isAdmin())
-            throw new UnauthorizedOperationException("User has no permission to create a bus");
 
         if (busRepository.findByPlate(busRequest.getPlate()).isPresent())
             throw new UniqueResourceAlreadyExist("This bus already exists");
@@ -45,8 +46,6 @@ public class BusService {
     }
 
     public BusDto getBus(Long id) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
 
         Bus bus = busRepository
                 .findById(id)
@@ -56,51 +55,51 @@ public class BusService {
     }
 
     public void deleteBus(Long id) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
-
         busRepository.deleteById(id);
     }
 
     public void updateBus(Long id, BusDto busDto) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
-
         Bus bus = busRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
 
-        Route route = routeRepository
-                .findByName(busDto.getRoute().getName())
-                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
+        if (busDto.getRoute() != null) {
+            Route route = routeRepository
+                    .findByName(busDto.getRoute().getName())
+                    .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
 
-        Station station = stationRepository
-                .findByName(busDto.getStation().getName())
-                .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
+            bus.setRoute(route);
+        }
 
         bus.setPlate(busDto.getPlate());
-        bus.setRoute(route);
-        bus.setStation(station);
         busRepository.save(bus);
     }
 
-    public void updateBusRoute(Long id, String routeName) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
-
+    public void updateBusRoute(Long id, NewRouteRequestDto newRouteRequestDto) {
         Bus bus = busRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
 
         Route route = routeRepository
-                .findByName(routeName)
+                .findByName(newRouteRequestDto.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
 
+        // Set the new route to the bus
         bus.setRoute(route);
         route.addBus(bus);
         busRepository.save(bus);
         routeRepository.save(route);
-//        String message = "Usted ha actualizado la ruta de su bus!";
-//        applicationEventPublisher.publishEvent(new HelloEmailEvent(bus.getDriver().getEmail(), message));
+    }
+
+    public List<BusDto> getBusesByStation(String stationName) {
+        Station station = stationRepository
+                .findByName(stationName)
+                .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
+
+        List<Bus> buses = busRepository.findAllByStation(station);
+
+        return buses.stream()
+                .map(bus -> modelMapper.map(bus, BusDto.class))
+                .collect(Collectors.toList());
     }
 }
