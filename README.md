@@ -1,4 +1,4 @@
-#Spring Boot
+# Spring Boot
 
 Setup:
 - Enable Environment Variables from Run/Debug configuration
