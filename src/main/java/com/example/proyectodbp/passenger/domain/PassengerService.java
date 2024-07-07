@@ -1,5 +1,6 @@
 package com.example.proyectodbp.passenger.domain;
 
+import com.example.proyectodbp.email.domain.EmailService;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
@@ -17,13 +18,16 @@ public class PassengerService {
     private final PassengerRepository passengerRepository;
     private final StationRepository stationRepository;
     private final AuthorizationUtils authorizationUtils;
+
+    private final EmailService emailService;
     private final ModelMapper modelMapper = new ModelMapper();
 
 
-    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository, AuthorizationUtils authorizationUtils) {
+    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository, AuthorizationUtils authorizationUtils, EmailService emailService) {
         this.passengerRepository = passengerRepository;
         this.stationRepository = stationRepository;
         this.authorizationUtils = authorizationUtils;
+        this.emailService = emailService;
     }
 
     public PassengerDto getPassengerInfo(Long id) {
@@ -72,6 +76,9 @@ public class PassengerService {
         passengerToUpdate.setLastName(passengerDto.getLastName());
         passengerToUpdate.setEmail(passengerDto.getEmail());
         passengerRepository.save(passengerToUpdate);
+
+        // Send email notification
+        emailService.sendSimpleMessage(email, "Your information has been updated", "Dear " + passengerDto.getFirstName() + ",\n\nYour information has been successfully updated.");
     }
 
     public void updatePassengerStation(StationDto stationDto) {
@@ -97,5 +104,26 @@ public class PassengerService {
         newStation.addPassenger(passenger);
         passengerRepository.save(passenger);
         stationRepository.save(newStation);
+
+        // Send email notification
+        emailService.sendSimpleMessage(email, "Your station has been updated", "Dear " + passenger.getFirstName() + ",\n\nYour station has been successfully updated to " + newStation.getName() + ".\n\nBest,\nYour Team");
+    }
+
+    public StationDto getCurrentPassengerStation() {
+        String email = authorizationUtils.getCurrentUserEmail();
+        if (email == null) {
+            throw new UnauthorizedOperationException("Anonymous user not allowed to access this resource");
+        }
+
+        Passenger passenger = passengerRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("The passenger does not exist"));
+
+        Station station = passenger.getStation();
+        if (station == null) {
+            throw new ResourceNotFoundException("This user does not have a defined station");
+        }
+
+        return modelMapper.map(station, StationDto.class);
     }
 }

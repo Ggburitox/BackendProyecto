@@ -43,4 +43,10 @@ public class PassengerController {
         passengerService.updatePassengerStation(stationDto);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/me/station")
+    public ResponseEntity<StationDto> getCurrentPassengerStation() {
+        return ResponseEntity.ok(passengerService.getCurrentPassengerStation());
+    }
+
 }
