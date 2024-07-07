@@ -1,7 +1,7 @@
 package com.example.proyectodbp.driver.domain;
 
 import com.example.proyectodbp.bus.domain.Bus;
-import com.example.proyectodbp.bus.dto.NewBusRequestDto;
+import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.driver.dto.DriverDto;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
@@ -78,7 +78,7 @@ public class DriverService {
         applicationEventPublisher.publishEvent(new HelloEmailEvent(driverInfo.getEmail(), message));
     }
 
-    public void updateDriverBus(Long id, NewBusRequestDto busDto) {
+    public void updateDriverBus(Long id, BusDto busDto) {
         if (!authorizationUtils.isAdminOrResourceOwner(id))
             throw new UnauthorizedOperationException("User has no permission to modify this resource");
 

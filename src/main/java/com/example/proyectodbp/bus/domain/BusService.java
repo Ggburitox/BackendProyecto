@@ -4,10 +4,9 @@ import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
-import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.route.domain.Route;
-import com.example.proyectodbp.route.dto.NewRouteRequestDto;
+import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.domain.Station;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
@@ -75,16 +74,15 @@ public class BusService {
         busRepository.save(bus);
     }
 
-    public void updateBusRoute(Long id, NewRouteRequestDto newRouteRequestDto) {
+    public void updateBusRoute(Long id, RouteDto routeDto) {
         Bus bus = busRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
 
         Route route = routeRepository
-                .findByName(newRouteRequestDto.getName())
+                .findByName(routeDto.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
 
-        // Set the new route to the bus
         bus.setRoute(route);
         route.addBus(bus);
         busRepository.save(bus);

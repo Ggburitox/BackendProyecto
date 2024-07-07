@@ -4,9 +4,10 @@ import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.passenger.domain.Passenger;
-import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
+import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
-import com.example.proyectodbp.station.dto.NewStationRequestDto;
+import com.example.proyectodbp.route.dto.RouteDto;
+import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
 import com.example.proyectodbp.auth.utils.AuthorizationUtils;
@@ -24,13 +25,14 @@ public class StationService {
     private final PassengerRepository passengerRepository;
     private final ModelMapper modelMapper = new ModelMapper();
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final RouteRepository routeRepository;
 
-    public StationService(StationRepository stationRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher, PassengerRepository passengerRepository) {
+    public StationService(StationRepository stationRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher, PassengerRepository passengerRepository, RouteRepository routeRepository) {
         this.stationRepository = stationRepository;
         this.authorizationUtils = authorizationUtils;
         this.applicationEventPublisher = applicationEventPublisher;
         this.passengerRepository = passengerRepository;
-
+        this.routeRepository = routeRepository;
     }
 
     public String createStation(StationDto newStation) {
@@ -66,7 +68,7 @@ public class StationService {
         stationRepository.delete(station);
     }
 
-    public void updateStation(Long id, NewStationRequestDto stationDto) {
+    public void updateStation(Long id, StationDto stationDto) {
 
         Station stationToUpdate = stationRepository
                 .findById(id)
@@ -76,7 +78,7 @@ public class StationService {
         stationRepository.save(stationToUpdate);
     }
 
-    public void addPassenger(Long id, NewPassengerRequestDto passengerDto) {
+    public void addPassenger(Long id, PassengerDto passengerDto) {
         Station station = stationRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
@@ -85,9 +87,7 @@ public class StationService {
                 .findByEmail(passengerDto.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("This passenger does not exist"));
 
-        // Check if the passenger is already in the station's passenger list
         if (!station.getPassengers().contains(passenger)) {
-            // If the passenger is not in the station's passenger list, add it
             station.addPassenger(passenger);
             passenger.setStation(station);
             stationRepository.save(station);
@@ -96,5 +96,19 @@ public class StationService {
         else {
             throw new UnauthorizedOperationException("This passenger is already in the station's passenger list");
         }
+    }
+
+    public List<RouteDto> getCurrentStationRoutes() {
+        String userEmail = authorizationUtils.getCurrentUserEmail();
+        Passenger passenger = passengerRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("This passenger does not exist"));
+
+        if(passenger.getStation() == null){
+            throw new ResourceNotFoundException("This passenger is not in any station");
+        }
+        Station station = passenger.getStation();
+
+        return routeRepository.findRoutesByStation(station).stream()
+                .map(route -> modelMapper.map(route, RouteDto.class))
+                .collect(Collectors.toList());
     }
 }

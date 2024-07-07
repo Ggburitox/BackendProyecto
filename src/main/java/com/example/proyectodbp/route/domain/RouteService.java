@@ -1,21 +1,17 @@
 package com.example.proyectodbp.route.domain;
 
-import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
-import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.route.dto.NewRouteRequestDto;
 import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.domain.Station;
-import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
 import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,23 +69,20 @@ public class RouteService{
         routeRepository.save(route);
     }
 
-    public void addStation(Long id, NewStationRequestDto NewStationRequestDto) {
-        Route newRoute = routeRepository
+    public void addStation(Long id, StationDto stationDto) {
+        Route route = routeRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
 
         Station station = stationRepository
-                .findByName(NewStationRequestDto.getName())
+                .findByName(stationDto.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
 
-        // Check if the station is already in the new route's station list
-        if (!newRoute.getStations().contains(station)) {
-            // If the station is not in the new route's station list, add it
-            newRoute.addStation(station);
-            station.addRoute(newRoute);
-            routeRepository.save(newRoute);
+        if (!route.getStations().contains(station)) {
+            route.addStation(station);
+            station.addRoute(route);
+            routeRepository.save(route);
             stationRepository.save(station);
         }
     }
-
 }

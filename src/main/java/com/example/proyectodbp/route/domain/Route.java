@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -20,7 +19,6 @@ public class Route {
     private Long id;
 
     @Column(nullable = false)
-    @Size(min = 1, max = 50)
     private String name;
 
     @OneToMany(mappedBy = "route")

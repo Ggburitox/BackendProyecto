@@ -1,8 +1,8 @@
 package com.example.proyectodbp.station.appliaction;
 
-import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
+import com.example.proyectodbp.passenger.dto.PassengerDto;
+import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.station.domain.StationService;
-import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,8 +34,13 @@ public class StationController {
         return ResponseEntity.ok(stationService.getStations());
     }
 
+    @GetMapping("/current/routes")
+    public ResponseEntity<List<RouteDto>> getCurrentStationRoutes(){
+        return ResponseEntity.ok(stationService.getCurrentStationRoutes());
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody NewStationRequestDto station){
+    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationDto station){
         stationService.updateStation(id, station);
         return ResponseEntity.ok().build();
     }
@@ -47,7 +52,7 @@ public class StationController {
     }
 
     @PatchMapping("/{id}/passenger")
-    public ResponseEntity<Void> addPassenger(@PathVariable Long id, @RequestBody NewPassengerRequestDto passengerDto){
+    public ResponseEntity<Void> addPassenger(@PathVariable Long id, @RequestBody PassengerDto passengerDto){
         stationService.addPassenger(id, passengerDto);
         return ResponseEntity.ok().build();
     }
