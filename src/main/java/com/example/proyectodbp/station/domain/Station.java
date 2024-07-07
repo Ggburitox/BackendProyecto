@@ -1,5 +1,6 @@
 package com.example.proyectodbp.station.domain;
 
+import com.example.proyectodbp.bus.domain.Bus;
 import com.example.proyectodbp.passenger.domain.Passenger;
 import com.example.proyectodbp.route.domain.Route;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -26,6 +27,9 @@ public class Station {
 
     @OneToMany(mappedBy = "station")
     private List<Passenger> passengers;
+
+    @OneToMany(mappedBy = "station")
+    private List<Bus> buses; // Add this line
 
     public void addPassenger(Passenger passenger) {
         passengers.add(passenger);

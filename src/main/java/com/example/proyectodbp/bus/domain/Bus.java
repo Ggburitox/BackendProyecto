@@ -2,6 +2,7 @@ package com.example.proyectodbp.bus.domain;
 
 import com.example.proyectodbp.route.domain.Route;
 import com.example.proyectodbp.driver.domain.Driver;
+import com.example.proyectodbp.station.domain.Station;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -27,4 +28,7 @@ public class Bus {
 
     @ManyToOne
     private Route route;
+
+    @ManyToOne
+    private Station station; // Add this
 }
