@@ -1,1 +1,11 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/zVSXTsHi)
+#Spring Boot
+
+Setup:
+- Enable Environment Variables from Run/Debug configuration
+- Add the following environment variables:
+    - `JWT_SECRET=secret;`
+    - `PG_HOST=localhost;`
+    - `PG_PORT=5432;`
+    - `PGPASSWORD=postgres;` (depends on your pgadmin configuration)
+    - `PGUSER=postgres;` (depends on your pgadmin configuration)
+    - `POSTGRES_DB=postgres`
