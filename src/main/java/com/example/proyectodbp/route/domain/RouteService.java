@@ -36,7 +36,7 @@ public class RouteService{
         }
 
         Route route = modelMapper.map(routeDto, Route.class);
-        routeRepository.save(route); // Save the route to the database
+        routeRepository.save(route);
         return "/routes/" + route.getId();
     }
 

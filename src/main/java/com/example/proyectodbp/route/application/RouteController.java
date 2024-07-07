@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @Controller
-@RequestMapping("/routes")
+@RequestMapping("/route")
 public class RouteController {
     private final RouteService routeService;
 
