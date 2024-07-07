@@ -100,4 +100,16 @@ public class BusService {
                 .map(bus -> modelMapper.map(bus, BusDto.class))
                 .collect(Collectors.toList());
     }
+
+    public void removeBusRoute(Long id) {
+        Bus bus = busRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
+
+        Route route = bus.getRoute();
+        route.removeBus(bus);
+        bus.setRoute(null);
+        busRepository.save(bus);
+        routeRepository.save(route);
+    }
 }

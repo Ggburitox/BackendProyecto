@@ -1,5 +1,6 @@
 package com.example.proyectodbp.station.appliaction;
 
+import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.station.domain.StationService;
@@ -39,6 +40,11 @@ public class StationController {
         return ResponseEntity.ok(stationService.getCurrentStationRoutes());
     }
 
+    @GetMapping("/current/buses")
+    public ResponseEntity<List<BusDto>> getCurrentStationBuses(){
+        return ResponseEntity.ok(stationService.getCurrentStationBuses());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationDto station){
         stationService.updateStation(id, station);
@@ -49,6 +55,12 @@ public class StationController {
     public ResponseEntity<Void> deleteStation(@PathVariable Long id){
         stationService.deleteStation(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{id}/passenger")
+    public ResponseEntity<Void> removePassenger(@PathVariable Long id, @RequestBody PassengerDto passengerDto){
+        stationService.removePassenger(id, passengerDto);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}/passenger")

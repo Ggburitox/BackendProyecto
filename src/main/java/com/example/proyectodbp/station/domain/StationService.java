@@ -1,11 +1,13 @@
 package com.example.proyectodbp.station.domain;
 
+import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.passenger.domain.Passenger;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
+import com.example.proyectodbp.route.domain.Route;
 import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.dto.StationDto;
@@ -110,5 +112,41 @@ public class StationService {
         return routeRepository.findRoutesByStation(station).stream()
                 .map(route -> modelMapper.map(route, RouteDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public List<BusDto> getCurrentStationBuses() {
+        String userEmail = authorizationUtils.getCurrentUserEmail();
+        Passenger passenger = passengerRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("This passenger does not exist"));
+
+        if(passenger.getStation() == null){
+            throw new ResourceNotFoundException("This passenger is not in any station");
+        }
+        Station station = passenger.getStation();
+        List<Route> routes = station.getRoutes();
+
+        return routes.stream()
+                .flatMap(route -> route.getBuses().stream())
+                .map(bus -> modelMapper.map(bus, BusDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public void removePassenger(Long id, PassengerDto passengerDto) {
+        Station station = stationRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
+
+        Passenger passenger = passengerRepository
+                .findByEmail(passengerDto.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("This passenger does not exist"));
+
+        if (station.getPassengers().contains(passenger)) {
+            station.removePassenger(passenger);
+            passenger.setStation(null);
+            stationRepository.save(station);
+            passengerRepository.save(passenger);
+        }
+        else {
+            throw new UnauthorizedOperationException("This passenger is not in the station's passenger list");
+        }
     }
 }

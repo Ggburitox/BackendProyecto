@@ -39,6 +39,12 @@ public class RouteController {
         routeService.deleteRoute(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{id}/station")
+    public ResponseEntity<Void> removeStation(@PathVariable Long id, @RequestBody StationDto stationName) {
+        routeService.removeStation(id, stationName);
+        return ResponseEntity.noContent().build();
+    }
     
     @PatchMapping("/{id}/station")
     public ResponseEntity<Void> addStation(@PathVariable Long id, @RequestBody StationDto stationName) {

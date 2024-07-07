@@ -85,4 +85,19 @@ public class RouteService{
             stationRepository.save(station);
         }
     }
+
+    public void removeStation(Long id, StationDto stationName) {
+        Route route = routeRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
+
+        Station station = stationRepository
+                .findByName(stationName.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
+
+        route.removeStation(station);
+        station.removeRoute(route);
+        routeRepository.save(route);
+        stationRepository.save(station);
+    }
 }

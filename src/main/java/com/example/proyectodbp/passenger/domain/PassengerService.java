@@ -78,11 +78,18 @@ public class PassengerService {
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("The passenger does not exist"));
 
+        Station oldStation = passenger.getStation();
+        if (oldStation != null) {
+            oldStation.removePassenger(passenger);
+        }
+
         Station newStation = stationRepository
                 .findByName(stationDto.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("The station does not exist"));
 
         passenger.setStation(newStation);
+        newStation.addPassenger(passenger);
         passengerRepository.save(passenger);
+        stationRepository.save(newStation);
     }
 }
