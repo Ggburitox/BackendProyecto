@@ -1,6 +1,6 @@
 package com.example.proyectodbp.station.dto;
 
-import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
+import com.example.proyectodbp.passenger.dto.PassengerDto;
 import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -13,5 +13,5 @@ public class StationDto {
     @Size(min = 2, max = 50)
     private String name;
 
-    private List<NewPassengerRequestDto> passengers;
+    private List<PassengerDto> passengers;
 }

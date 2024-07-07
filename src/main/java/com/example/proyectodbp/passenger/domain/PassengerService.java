@@ -1,16 +1,14 @@
 package com.example.proyectodbp.passenger.domain;
 
-import com.example.proyectodbp.bus.domain.BusService;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UnauthorizedOperationException;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
 import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
 import com.example.proyectodbp.station.domain.Station;
-import com.example.proyectodbp.station.dto.NewStationRequestDto;
+import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
 import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -18,19 +16,14 @@ import org.springframework.stereotype.Service;
 public class PassengerService {
     private final PassengerRepository passengerRepository;
     private final StationRepository stationRepository;
-
-    private final BusService busService;
     private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper = new ModelMapper();
-    private final ApplicationEventPublisher applicationEventPublisher;
 
 
-    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher, BusService busService) {
+    public PassengerService(PassengerRepository passengerRepository, StationRepository stationRepository, AuthorizationUtils authorizationUtils) {
         this.passengerRepository = passengerRepository;
         this.stationRepository = stationRepository;
         this.authorizationUtils = authorizationUtils;
-        this.applicationEventPublisher = applicationEventPublisher;
-        this.busService = busService;
     }
 
     public PassengerDto getPassengerInfo(Long id) {
@@ -75,7 +68,7 @@ public class PassengerService {
         passengerRepository.save(passengerToUpdate);
     }
 
-    public void updatePassengerStation(NewStationRequestDto stationName) {
+    public void updatePassengerStation(StationDto stationDto) {
         String email = authorizationUtils.getCurrentUserEmail();
         if (email==null) {
             throw new UnauthorizedOperationException("Anonymous user not allowed to access this resource");
@@ -86,7 +79,7 @@ public class PassengerService {
                 .orElseThrow(() -> new UsernameNotFoundException("The passenger does not exist"));
 
         Station newStation = stationRepository
-                .findByName(stationName.getName())
+                .findByName(stationDto.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("The station does not exist"));
 
         passenger.setStation(newStation);

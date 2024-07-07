@@ -1,7 +1,5 @@
 package com.example.proyectodbp.passenger.dto;
 
-import com.example.proyectodbp.station.dto.NewStationRequestDto;
-import com.example.proyectodbp.station.dto.StationDto;
 import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -23,7 +21,4 @@ public class PassengerDto {
     @NotNull
     @Email
     private String email;
-
-    @NotNull
-    private NewStationRequestDto station;
 }

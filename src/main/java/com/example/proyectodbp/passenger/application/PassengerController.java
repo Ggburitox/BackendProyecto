@@ -1,14 +1,11 @@
 package com.example.proyectodbp.passenger.application;
 
-import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.passenger.domain.PassengerService;
 import com.example.proyectodbp.passenger.dto.PassengerDto;
-import com.example.proyectodbp.station.dto.NewStationRequestDto;
+import com.example.proyectodbp.station.dto.StationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/passenger")
@@ -42,9 +39,8 @@ public class PassengerController {
     }
 
     @PatchMapping("/me/station")
-    public ResponseEntity<Void> patchPassengerStation(@RequestBody NewStationRequestDto stationName) {
-        passengerService.updatePassengerStation(stationName);
+    public ResponseEntity<Void> patchPassengerStation(@RequestBody StationDto stationDto) {
+        passengerService.updatePassengerStation(stationDto);
         return ResponseEntity.ok().build();
     }
-
 }
