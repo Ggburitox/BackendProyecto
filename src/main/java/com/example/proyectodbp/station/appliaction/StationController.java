@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
+import java.util.List;
 
 @Controller
 @RequestMapping("/station")
@@ -28,6 +29,11 @@ public class StationController {
         return ResponseEntity.ok(stationService.getStationInfo(id));
     }
 
+    @GetMapping()
+    public ResponseEntity<List<StationDto>> getStations(){
+        return ResponseEntity.ok(stationService.getStations());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody NewStationRequestDto station){
         stationService.updateStation(id, station);
@@ -45,5 +51,4 @@ public class StationController {
         stationService.addPassenger(id, passengerDto);
         return ResponseEntity.ok().build();
     }
-
 }

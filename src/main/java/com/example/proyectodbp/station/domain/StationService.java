@@ -6,7 +6,6 @@ import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.passenger.domain.Passenger;
 import com.example.proyectodbp.passenger.dto.NewPassengerRequestDto;
 import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
-import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.dto.NewStationRequestDto;
 import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
@@ -15,18 +14,19 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class StationService {
     private final StationRepository stationRepository;
-    private final RouteRepository routeRepository;
     private final AuthorizationUtils authorizationUtils;
     private final PassengerRepository passengerRepository;
     private final ModelMapper modelMapper = new ModelMapper();
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public StationService(StationRepository stationRepository, RouteRepository routeRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher, PassengerRepository passengerRepository) {
+    public StationService(StationRepository stationRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher, PassengerRepository passengerRepository) {
         this.stationRepository = stationRepository;
-        this.routeRepository = routeRepository;
         this.authorizationUtils = authorizationUtils;
         this.applicationEventPublisher = applicationEventPublisher;
         this.passengerRepository = passengerRepository;
@@ -49,6 +49,12 @@ public class StationService {
                 .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
 
         return modelMapper.map(station, StationDto.class);
+    }
+
+    public List<StationDto> getStations() {
+        return stationRepository.findAll().stream()
+                .map(station -> modelMapper.map(station, StationDto.class))
+                .collect(Collectors.toList());
     }
 
     public void deleteStation(Long id){
