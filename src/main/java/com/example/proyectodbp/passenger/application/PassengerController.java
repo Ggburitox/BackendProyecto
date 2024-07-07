@@ -26,9 +26,9 @@ public class PassengerController {
         return ResponseEntity.ok(passengerService.getPassengerOwnInfo());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> putPassenger(@PathVariable Long id, @RequestBody PassengerDto passenger) {
-        passengerService.updatePassenger(id, passenger);
+    @PutMapping("/me")
+    public ResponseEntity<Void> putCurrentPassenger(@RequestBody PassengerDto passenger) {
+        passengerService.updateCurrentPassenger(passenger);
         return ResponseEntity.ok().build();
     }
 

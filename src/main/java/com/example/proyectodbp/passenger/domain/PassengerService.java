@@ -58,10 +58,16 @@ public class PassengerService {
         passengerRepository.deleteById(passenger.getId());
     }
 
-    public void updatePassenger(Long id, PassengerDto passengerDto) {
+    public void updateCurrentPassenger(PassengerDto passengerDto) {
+        String email = authorizationUtils.getCurrentUserEmail();
+        if (email == null) {
+            throw new UnauthorizedOperationException("Anonymous user not allowed to access this resource");
+        }
+
         Passenger passengerToUpdate = passengerRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("The passenger does not exist"));
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("The passenger does not exist"));
+
         passengerToUpdate.setFirstName(passengerDto.getFirstName());
         passengerToUpdate.setLastName(passengerDto.getLastName());
         passengerToUpdate.setEmail(passengerDto.getEmail());
