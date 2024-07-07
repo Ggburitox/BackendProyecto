@@ -53,6 +53,12 @@ public class BusService {
         return modelMapper.map(bus, BusDto.class);
     }
 
+    public List<BusDto> getBuses() {
+        return busRepository.findAll().stream()
+                .map(bus -> modelMapper.map(bus, BusDto.class))
+                .collect(Collectors.toList());
+    }
+
     public void deleteBus(Long id) {
         busRepository.deleteById(id);
     }

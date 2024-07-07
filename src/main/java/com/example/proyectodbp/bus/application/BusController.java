@@ -7,6 +7,7 @@ import com.example.proyectodbp.route.dto.RouteDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/bus")
@@ -25,6 +26,11 @@ public class BusController {
     @GetMapping("/{id}")
     public ResponseEntity<BusDto> getBus(@PathVariable Long id) {
         return ResponseEntity.ok(busService.getBus(id));
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<BusDto>> getBuses() {
+        return ResponseEntity.ok(busService.getBuses());
     }
 
     @PutMapping("/{id}")
