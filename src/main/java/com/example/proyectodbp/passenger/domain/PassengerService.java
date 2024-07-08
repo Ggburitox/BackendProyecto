@@ -18,7 +18,6 @@ public class PassengerService {
     private final PassengerRepository passengerRepository;
     private final StationRepository stationRepository;
     private final AuthorizationUtils authorizationUtils;
-
     private final EmailService emailService;
     private final ModelMapper modelMapper = new ModelMapper();
 

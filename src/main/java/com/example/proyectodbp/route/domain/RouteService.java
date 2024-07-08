@@ -8,9 +8,7 @@ import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import com.example.proyectodbp.station.domain.Station;
 import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
-import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,15 +17,11 @@ import java.util.stream.Collectors;
 public class RouteService{
     private final RouteRepository routeRepository;
     private final StationRepository stationRepository;
-    private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper = new ModelMapper();
-    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public RouteService(RouteRepository routeRepository, StationRepository stationRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher) {
+    public RouteService(RouteRepository routeRepository, StationRepository stationRepository) {
         this.routeRepository = routeRepository;
         this.stationRepository = stationRepository;
-        this.authorizationUtils = authorizationUtils;
-        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public String createRoute(NewRouteRequestDto routeDto) {

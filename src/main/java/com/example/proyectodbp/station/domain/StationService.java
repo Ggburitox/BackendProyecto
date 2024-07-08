@@ -14,7 +14,6 @@ import com.example.proyectodbp.station.dto.StationDto;
 import com.example.proyectodbp.station.infraestructure.StationRepository;
 import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +25,11 @@ public class StationService {
     private final AuthorizationUtils authorizationUtils;
     private final PassengerRepository passengerRepository;
     private final ModelMapper modelMapper = new ModelMapper();
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final RouteRepository routeRepository;
 
-    public StationService(StationRepository stationRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher, PassengerRepository passengerRepository, RouteRepository routeRepository) {
+    public StationService(StationRepository stationRepository, AuthorizationUtils authorizationUtils, PassengerRepository passengerRepository, RouteRepository routeRepository) {
         this.stationRepository = stationRepository;
         this.authorizationUtils = authorizationUtils;
-        this.applicationEventPublisher = applicationEventPublisher;
         this.passengerRepository = passengerRepository;
         this.routeRepository = routeRepository;
     }
