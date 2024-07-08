@@ -12,4 +12,8 @@ import lombok.*;
 public class Driver extends User {
     @OneToOne(mappedBy = "driver",cascade = CascadeType.ALL)
     private Bus bus;
+
+    boolean busIsPresent(){
+        return bus != null;
+    }
 }

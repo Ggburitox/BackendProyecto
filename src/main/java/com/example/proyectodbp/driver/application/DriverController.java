@@ -32,6 +32,12 @@ public class DriverController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/me/bus")
+    public ResponseEntity<Void> removeDriverBus(){
+        driverService.removeDriverBus();
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> putDriver(@PathVariable Long id, @RequestBody DriverDto driver) {
         driverService.updateDriverInfo(id, driver);
@@ -41,6 +47,12 @@ public class DriverController {
     @PatchMapping("/{id}/bus")
     public ResponseEntity<Void> patchDriverBus(@PathVariable Long id,@RequestBody BusDto busDto){
         driverService.updateDriverBus(id, busDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/me/bus")
+    public ResponseEntity<Void> patchDriverBus(@RequestBody BusDto busDto){
+        driverService.updateDriverOwnBus(busDto);
         return ResponseEntity.ok().build();
     }
 }
