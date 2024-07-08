@@ -119,6 +119,8 @@ public class DriverService {
         newBus.setDriver(driver);
         driverRepository.save(driver);
         busRepository.save(newBus);
+        String message = "Su bus ha sido actualizado!";
+        applicationEventPublisher.publishEvent(new HelloEmailEvent(email, message));
     }
 
     public void removeDriverBus() {
