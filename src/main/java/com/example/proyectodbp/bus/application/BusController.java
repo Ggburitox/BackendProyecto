@@ -56,4 +56,10 @@ public class BusController {
         busService.updateBusRoute(id, routeName);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/me/route")
+    public ResponseEntity<Void> patchMyBusRoute(@RequestBody RouteDto routeName){
+        busService.updateMyBusRoute(routeName);
+        return ResponseEntity.ok().build();
+    }
 }

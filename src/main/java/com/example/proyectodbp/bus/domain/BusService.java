@@ -3,6 +3,8 @@ package com.example.proyectodbp.bus.domain;
 import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
+import com.example.proyectodbp.driver.domain.Driver;
+import com.example.proyectodbp.driver.infraestructure.DriverRepository;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.route.domain.Route;
@@ -25,13 +27,15 @@ public class BusService {
     private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper = new ModelMapper();
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final DriverRepository driverRepository;
 
-    public BusService(BusRepository busRepository, RouteRepository routeRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher, StationRepository stationRepository) {
+    public BusService(BusRepository busRepository, RouteRepository routeRepository, AuthorizationUtils authorizationUtils, ApplicationEventPublisher applicationEventPublisher, StationRepository stationRepository, DriverRepository driverRepository) {
         this.busRepository = busRepository;
         this.routeRepository = routeRepository;
         this.authorizationUtils = authorizationUtils;
         this.applicationEventPublisher = applicationEventPublisher;
         this.stationRepository = stationRepository;
+        this.driverRepository = driverRepository;
     }
   
     public String createBus(NewBusRequestDto busRequest) {
@@ -115,6 +119,28 @@ public class BusService {
         Route route = bus.getRoute();
         route.removeBus(bus);
         bus.setRoute(null);
+        busRepository.save(bus);
+        routeRepository.save(route);
+    }
+
+    public void updateMyBusRoute(RouteDto routeName) {
+        Driver driver = driverRepository.findByEmail(authorizationUtils.getCurrentUserEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
+
+        Bus bus = driver.getBus();
+
+        if(bus.getRoute()!=null){
+            Route oldRoute = bus.getRoute();
+            oldRoute.removeBus(bus);
+            routeRepository.save(oldRoute);
+        }
+
+        Route route = routeRepository
+                .findByName(routeName.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
+
+        bus.setRoute(route);
+        route.addBus(bus);
         busRepository.save(bus);
         routeRepository.save(route);
     }
