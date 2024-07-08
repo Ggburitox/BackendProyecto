@@ -9,3 +9,7 @@ Setup:
     - `PGPASSWORD=postgres;` (depends on your pgadmin configuration)
     - `PGUSER=postgres;` (depends on your pgadmin configuration)
     - `POSTGRES_DB=postgres`
+    - `MAIL_HOST=smtp.gmail.com`
+    - `MAIL_PORT=587`
+    - `MAIL_USERNAME` (set your own email)
+    - `MAIL_PASSWORD` (set your password for the application)
