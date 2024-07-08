@@ -32,12 +32,6 @@ public class DriverController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/me/bus")
-    public ResponseEntity<Void> removeDriverBus(){
-        driverService.removeDriverBus();
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<Void> putDriver(@PathVariable Long id, @RequestBody DriverDto driver) {
         driverService.updateDriverInfo(id, driver);

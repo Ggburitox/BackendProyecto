@@ -86,7 +86,12 @@ public class DriverService {
                 .findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("This driver does not exist"));
 
-        removeDriverBus();
+        if(driver.busIsPresent()){
+            Bus oldBus = driver.getBus();
+            oldBus.setDriver(null);
+            driver.setBus(null);
+            busRepository.save(oldBus);
+        }
 
         Bus newBus = busRepository
                 .findByPlate(busDto.getPlate())
@@ -109,35 +114,6 @@ public class DriverService {
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Driver not found"));
 
-        removeDriverBus();
-
-        Bus newBus = busRepository
-                .findByPlate(busDto.getPlate())
-                .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
-
-        driver.setBus(newBus);
-        newBus.setDriver(driver);
-        driverRepository.save(driver);
-        busRepository.save(newBus);
-        String message = "Su bus ha sido actualizado!";
-        applicationEventPublisher.publishEvent(new HelloEmailEvent(email, message));
-    }
-
-    public void removeDriverBus() {
-        String email = authorizationUtils.getCurrentUserEmail();
-        if (email==null) {
-            throw new UnauthorizedOperationException("Anonymus user not allowed to access this resource");
-        }
-        Driver driver = driverRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Driver not found"));
-        if(driver.busIsPresent()){
-            Bus oldBus = busRepository
-                    .findById(driver.getBus().getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("This driver does not have a bus"));
-
-            oldBus.setDriver(null);
-            busRepository.save(oldBus);
-        }
+        updateDriverBus(driver.getId(), busDto);
     }
 }
