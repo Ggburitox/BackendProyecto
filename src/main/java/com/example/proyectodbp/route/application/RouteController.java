@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
+import java.util.List;
 
 @Controller
 @RequestMapping("/route")
@@ -26,6 +27,11 @@ public class RouteController {
     @GetMapping("/{id}")
     public ResponseEntity<RouteDto> getRoute(@PathVariable Long id) {
         return ResponseEntity.ok(routeService.getRouteInfo(id));
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<RouteDto>> getRoutes() {
+        return ResponseEntity.ok(routeService.getRoutes());
     }
 
     @PutMapping("/{id}")

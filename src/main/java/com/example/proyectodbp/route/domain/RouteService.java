@@ -100,4 +100,11 @@ public class RouteService{
         routeRepository.save(route);
         stationRepository.save(station);
     }
+
+    public List<RouteDto> getRoutes() {
+        return routeRepository.findAll()
+                .stream()
+                .map(route -> modelMapper.map(route, RouteDto.class))
+                .collect(Collectors.toList());
+    }
 }
