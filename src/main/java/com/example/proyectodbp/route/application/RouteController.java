@@ -40,15 +40,9 @@ public class RouteController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRoute(@PathVariable Long id) {
-        routeService.deleteRoute(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}/station")
-    public ResponseEntity<Void> removeStation(@PathVariable Long id, @RequestBody StationDto stationName) {
-        routeService.removeStation(id, stationName);
+    @DeleteMapping("/{name}")
+    public ResponseEntity<Void> deleteRoute(@PathVariable String name) {
+        routeService.deleteRoute(name);
         return ResponseEntity.noContent().build();
     }
     

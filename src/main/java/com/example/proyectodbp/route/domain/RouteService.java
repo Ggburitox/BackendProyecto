@@ -42,10 +42,6 @@ public class RouteService{
         return modelMapper.map(route, RouteDto.class);
     }
 
-    public void deleteRoute(Long id) {
-        routeRepository.deleteById(id);
-    }
-
     public void updateRoute(Long id, RouteDto routeDto) {
 
         Route route = routeRepository
@@ -61,21 +57,6 @@ public class RouteService{
         route.setName(routeDto.getName());
         route.setStations(stations);
         routeRepository.save(route);
-    }
-
-    public void removeStation(Long id, StationDto stationName) {
-        Route route = routeRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
-
-        Station station = stationRepository
-                .findByName(stationName.getName())
-                .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
-
-        route.removeStation(station);
-        station.removeRoute(route);
-        routeRepository.save(route);
-        stationRepository.save(station);
     }
 
     public List<RouteDto> getRoutes() {
@@ -98,5 +79,13 @@ public class RouteService{
         station.addRoute(route);
         routeRepository.save(route);
         stationRepository.save(station);
+    }
+
+    public void deleteRoute(String name) {
+        Route route = routeRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
+
+        routeRepository.delete(route);
     }
 }

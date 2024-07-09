@@ -58,12 +58,11 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteStation(Long id){
-        Station station = stationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
-        for(Passenger passenger : station.getPassengers()){
-            passenger.setStation(null);
-            passengerRepository.save(passenger);
-        }
+    public void deleteStation(String name) {
+        Station station = stationRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
+
         stationRepository.delete(station);
     }
 
