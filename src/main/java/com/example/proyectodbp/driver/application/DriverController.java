@@ -38,15 +38,9 @@ public class DriverController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{id}/bus")
-    public ResponseEntity<Void> patchDriverBus(@PathVariable Long id,@RequestBody BusDto busDto){
-        driverService.updateDriverBus(id, busDto);
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/me/bus")
-    public ResponseEntity<Void> patchDriverBus(@RequestBody BusDto busDto){
-        driverService.updateDriverOwnBus(busDto);
+    @PatchMapping("/{email}/bus")
+    public ResponseEntity<Void> patchDriverBus(@PathVariable String email, @RequestBody BusDto busDto){
+        driverService.updateDriverBus(email, busDto);
         return ResponseEntity.ok().build();
     }
 }

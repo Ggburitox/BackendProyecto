@@ -78,42 +78,26 @@ public class DriverService {
         applicationEventPublisher.publishEvent(new HelloEmailEvent(driverInfo.getEmail(), message));
     }
 
-    public void updateDriverBus(Long id, BusDto busDto) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
-
+    public void updateDriverBus(String email, BusDto busDto) {
         Driver driver = driverRepository
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("This driver does not exist"));
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Driver not found"));
 
-        if(driver.busIsPresent()){
+        if(driver.getBus() != null){
             Bus oldBus = driver.getBus();
-            oldBus.setDriver(null);
             driver.setBus(null);
+            oldBus.setDriver(null);
+            driverRepository.save(driver);
             busRepository.save(oldBus);
         }
 
         Bus newBus = busRepository
                 .findByPlate(busDto.getPlate())
-                .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bus not found"));
 
         driver.setBus(newBus);
         newBus.setDriver(driver);
         driverRepository.save(driver);
         busRepository.save(newBus);
-        String message = "Su bus ha sido actualizado!";
-        applicationEventPublisher.publishEvent(new HelloEmailEvent(driver.getEmail(), message));
-    }
-
-    public void updateDriverOwnBus(BusDto busDto) {
-        String email = authorizationUtils.getCurrentUserEmail();
-        if (email==null) {
-            throw new UnauthorizedOperationException("Anonymus user not allowed to access this resource");
-        }
-        Driver driver = driverRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Driver not found"));
-
-        updateDriverBus(driver.getId(), busDto);
     }
 }

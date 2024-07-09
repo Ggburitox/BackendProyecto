@@ -52,9 +52,9 @@ public class RouteController {
         return ResponseEntity.noContent().build();
     }
     
-    @PatchMapping("/{id}/station")
-    public ResponseEntity<Void> addStation(@PathVariable Long id, @RequestBody StationDto stationName) {
-        routeService.addStation(id, stationName);
+    @PatchMapping("{name}/station")
+    public ResponseEntity<Void> addStation(@PathVariable String name, @RequestBody StationDto stationDto) {
+        routeService.addStation(name, stationDto);
         return ResponseEntity.ok().build();
     }
 }

@@ -3,8 +3,6 @@ package com.example.proyectodbp.bus.domain;
 import com.example.proyectodbp.bus.dto.BusDto;
 import com.example.proyectodbp.bus.dto.NewBusRequestDto;
 import com.example.proyectodbp.bus.infraestructure.BusRepository;
-import com.example.proyectodbp.driver.domain.Driver;
-import com.example.proyectodbp.driver.infraestructure.DriverRepository;
 import com.example.proyectodbp.exceptions.ResourceNotFoundException;
 import com.example.proyectodbp.exceptions.UniqueResourceAlreadyExist;
 import com.example.proyectodbp.route.domain.Route;
@@ -12,7 +10,6 @@ import com.example.proyectodbp.route.dto.RouteDto;
 import com.example.proyectodbp.route.infraestructure.RouteRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import com.example.proyectodbp.auth.utils.AuthorizationUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,15 +17,11 @@ import java.util.stream.Collectors;
 public class BusService {
     private final BusRepository busRepository;
     private final RouteRepository routeRepository;
-    private final AuthorizationUtils authorizationUtils;
     private final ModelMapper modelMapper = new ModelMapper();
-    private final DriverRepository driverRepository;
 
-    public BusService(BusRepository busRepository, RouteRepository routeRepository, AuthorizationUtils authorizationUtils, DriverRepository driverRepository) {
+    public BusService(BusRepository busRepository, RouteRepository routeRepository) {
         this.busRepository = busRepository;
         this.routeRepository = routeRepository;
-        this.authorizationUtils = authorizationUtils;
-        this.driverRepository = driverRepository;
     }
   
     public String createBus(NewBusRequestDto busRequest) {
@@ -77,47 +70,21 @@ public class BusService {
         busRepository.save(bus);
     }
 
-    public void updateBusRoute(Long id, RouteDto routeDto) {
+    public void patchBusRoute(String plate, RouteDto routeDto) {
         Bus bus = busRepository
-                .findById(id)
+                .findByPlate(plate)
                 .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
 
-        Route route = routeRepository
-                .findByName(routeDto.getName())
-                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
-
-        bus.setRoute(route);
-        route.addBus(bus);
-        busRepository.save(bus);
-        routeRepository.save(route);
-    }
-
-    public void removeBusRoute(Long id) {
-        Bus bus = busRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
-
-        Route route = bus.getRoute();
-        route.removeBus(bus);
-        bus.setRoute(null);
-        busRepository.save(bus);
-        routeRepository.save(route);
-    }
-
-    public void updateMyBusRoute(RouteDto routeName) {
-        Driver driver = driverRepository.findByEmail(authorizationUtils.getCurrentUserEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("This driver does not exist"));
-
-        Bus bus = driver.getBus();
-
-        if(bus.getRoute()!=null){
+        if(bus.getRoute() != null){
             Route oldRoute = bus.getRoute();
             oldRoute.removeBus(bus);
+            bus.setRoute(null);
             routeRepository.save(oldRoute);
+            busRepository.save(bus);
         }
 
         Route route = routeRepository
-                .findByName(routeName.getName())
+                .findByName(routeDto.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
 
         bus.setRoute(route);

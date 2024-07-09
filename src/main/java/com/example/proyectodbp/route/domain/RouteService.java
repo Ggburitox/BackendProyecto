@@ -63,23 +63,6 @@ public class RouteService{
         routeRepository.save(route);
     }
 
-    public void addStation(Long id, StationDto stationDto) {
-        Route route = routeRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
-
-        Station station = stationRepository
-                .findByName(stationDto.getName())
-                .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
-
-        if (!route.getStations().contains(station)) {
-            route.addStation(station);
-            station.addRoute(route);
-            routeRepository.save(route);
-            stationRepository.save(station);
-        }
-    }
-
     public void removeStation(Long id, StationDto stationName) {
         Route route = routeRepository
                 .findById(id)
@@ -100,5 +83,20 @@ public class RouteService{
                 .stream()
                 .map(route -> modelMapper.map(route, RouteDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public void addStation(String name, StationDto stationDto) {
+        Route route = routeRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("This route does not exist"));
+
+        Station station = stationRepository
+                .findByName(stationDto.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("This station does not exist"));
+
+        route.addStation(station);
+        station.addRoute(route);
+        routeRepository.save(route);
+        stationRepository.save(station);
     }
 }
