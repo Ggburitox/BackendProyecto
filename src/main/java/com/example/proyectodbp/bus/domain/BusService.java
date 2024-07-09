@@ -25,7 +25,6 @@ public class BusService {
     }
   
     public String createBus(NewBusRequestDto busRequest) {
-
         if (busRepository.findByPlate(busRequest.getPlate()).isPresent())
             throw new UniqueResourceAlreadyExist("This bus already exists");
 
@@ -47,10 +46,6 @@ public class BusService {
         return busRepository.findAll().stream()
                 .map(bus -> modelMapper.map(bus, BusDto.class))
                 .collect(Collectors.toList());
-    }
-
-    public void deleteBus(Long id) {
-        busRepository.deleteById(id);
     }
 
     public void updateBus(Long id, BusDto busDto) {
@@ -91,5 +86,12 @@ public class BusService {
         route.addBus(bus);
         busRepository.save(bus);
         routeRepository.save(route);
+    }
+
+    public void deleteBusByPlate(String plate) {
+        Bus bus = busRepository
+                .findByPlate(plate)
+                .orElseThrow(() -> new ResourceNotFoundException("This bus does not exist"));
+        busRepository.delete(bus);
     }
 }

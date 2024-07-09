@@ -39,9 +39,9 @@ public class BusController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBus(@PathVariable Long id) {
-        busService.deleteBus(id);
+    @DeleteMapping("/{plate}")
+    public ResponseEntity<Void> deleteBusByPlate(@PathVariable String plate) {
+        busService.deleteBusByPlate(plate);
         return ResponseEntity.noContent().build();
     }
 
