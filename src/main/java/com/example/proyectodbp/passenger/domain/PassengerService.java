@@ -57,7 +57,13 @@ public class PassengerService {
         Passenger passenger = passengerRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("The passenger does not exist"));
-
+        
+        Station station = passenger.getStation();
+        if (station != null) {
+            station.removePassenger(passenger);
+            stationRepository.save(station); 
+        }
+            
         passengerRepository.deleteById(passenger.getId());
     }
 
