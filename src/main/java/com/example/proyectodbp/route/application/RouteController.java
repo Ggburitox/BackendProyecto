@@ -53,7 +53,7 @@ public class RouteController {
     }
     
     @PatchMapping("{name}/station")
-    public ResponseEntity<Void> addStation(@PathVariable String name, @RequestBody StationDto stationDto) {
+    public ResponseEntity<Void> addRouteStation(@PathVariable String name, @RequestBody StationDto stationDto) {
         routeService.addStation(name, stationDto);
         return ResponseEntity.ok().build();
     }
