@@ -30,7 +30,7 @@ public class ProyectoDbpApplication {
                         .maxAge(3600)
                         .allowedHeaders("*")
                         .allowCredentials(false);
-            };
+            }
         };
-    };
+    }
 }
