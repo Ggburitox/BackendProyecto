@@ -26,9 +26,9 @@ public class DriverController {
         return ResponseEntity.ok(driverService.getDriverOwnInfo());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDriver(@PathVariable Long id) {
-        driverService.deleteDriver(id);
+    @DeleteMapping("/{email}")
+    public ResponseEntity<Void> deleteDriver(@PathVariable String email) {
+        driverService.deleteDriver(email);
         return ResponseEntity.noContent().build();
     }
 

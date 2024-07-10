@@ -52,11 +52,12 @@ public class DriverService {
         return getDriverInfo(driver.getId());
     }
 
-    public void deleteDriver(Long id) {
-        if (!authorizationUtils.isAdminOrResourceOwner(id))
-            throw new UnauthorizedOperationException("User has no permission to modify this resource");
+    public void deleteDriver(String email) {
+        Driver driver = driverRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Driver not found"));
 
-        driverRepository.deleteById(id);
+        driverRepository.delete(driver);
     }
 
     public void updateDriverInfo(Long id, DriverDto driverInfo) {
