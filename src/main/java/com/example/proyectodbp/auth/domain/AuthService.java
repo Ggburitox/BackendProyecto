@@ -5,6 +5,7 @@ import com.example.proyectodbp.auth.dto.JwtAuthResponse;
 import com.example.proyectodbp.auth.dto.LoginRequest;
 import com.example.proyectodbp.auth.dto.RegisterRequest;
 import com.example.proyectodbp.driver.infraestructure.DriverRepository;
+import com.example.proyectodbp.events.HelloEmailEvent;
 import com.example.proyectodbp.exceptions.UserAlreadyExistException;
 import com.example.proyectodbp.driver.domain.Driver;
 import com.example.proyectodbp.passenger.domain.Passenger;
@@ -12,6 +13,7 @@ import com.example.proyectodbp.passenger.infraestructure.PassengerRepository;
 import com.example.proyectodbp.user.domain.Role;
 import com.example.proyectodbp.user.domain.User;
 import com.example.proyectodbp.user.infraestructure.UserRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,13 +27,15 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final DriverRepository driverRepository;
     private final PassengerRepository passengerRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public AuthService(UserRepository<User> userRepository, JwtService jwtService, PasswordEncoder passwordEncoder, DriverRepository driverRepository, PassengerRepository passengerRepository) {
+    public AuthService(UserRepository<User> userRepository, JwtService jwtService, PasswordEncoder passwordEncoder, DriverRepository driverRepository, PassengerRepository passengerRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.driverRepository = driverRepository;
         this.passengerRepository = passengerRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public JwtAuthResponse login(LoginRequest request){
@@ -62,6 +66,9 @@ public class AuthService {
             driver.setCreatedAt(ZonedDateTime.now());
             driverRepository.save(driver);
 
+            String message = "Se ha registrado exitosamente como conductor";
+            applicationEventPublisher.publishEvent(new HelloEmailEvent(driver.getEmail(), message));
+
             JwtAuthResponse response = new JwtAuthResponse();
             response.setToken(jwtService.generateToken(driver));
             return response;
@@ -76,6 +83,9 @@ public class AuthService {
             passenger.setRole(Role.PASSENGER);
             passenger.setCreatedAt(ZonedDateTime.now());
             passengerRepository.save(passenger);
+
+            String message = "Se ha registrado exitosamente como pasajero";
+            applicationEventPublisher.publishEvent(new HelloEmailEvent(passenger.getEmail(), message));
 
             JwtAuthResponse response = new JwtAuthResponse();
             response.setToken(jwtService.generateToken(passenger));
